@@ -22,4 +22,12 @@ How to use git CLi, such as:
 
 branch → desenvolvimento paralelo → merge → conflito → resolução
 
+Added commands:
 
+- git branch
+- git checkout
+- git merge
+- git log --oneline --graph --all
+
+How to develop maintaining integrity of the project
+Fix conflicts
