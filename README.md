@@ -15,9 +15,9 @@ PostgreSQL :5432
 ```
 
 ## Services
-nginx: reverse proxy exposed on host port 8080
-backend: Python API
-db: PostgreSQL database with persistent volume
+- nginx: reverse proxy exposed on host port 8080
+- backend: Python API
+- db: PostgreSQL database with persistent volume
 
 ## Endpoints
 /api/visits	increments and returns visit counter
