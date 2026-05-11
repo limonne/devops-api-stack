@@ -7,7 +7,7 @@ A small DevOps lab project using Docker Compose to run a multi-service applicati
 ```text
 Client
   ↓
-Nginx reverse proxy :8080
+Nginx reverse proxy :7070
   ↓
 Python backend :8080
   ↓
