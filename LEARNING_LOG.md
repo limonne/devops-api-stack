@@ -1,4 +1,11 @@
-Today i've learn how to use git, such as:
+What I learned:
+
+Docker Compose service discovery
+PostgreSQL persistence with Docker volumes
+Healthchecks and service readiness
+Difference between container running and service health
+
+How to use git CLi, such as:
 
 - git init
 - git add
@@ -6,6 +13,5 @@ Today i've learn how to use git, such as:
 - git diff
 - git commit
 - git config
-
-These Cli are very usefull, since it's the base for code colaboration and versioning.
+- git show
 
