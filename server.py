@@ -80,7 +80,7 @@ class App(BaseHTTPRequestHandler):
                 self.send_response(500)
         
         elif self.path == "/version":
-            data = {"version":"2.0"}
+            data = {"version":"2.1"}
             self.send_response(200)
 
         else:
