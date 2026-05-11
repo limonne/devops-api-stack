@@ -1,5 +1,7 @@
 What I learned:
 
+## 11-05-2026
+
 Docker Compose service discovery
 PostgreSQL persistence with Docker volumes
 Healthchecks and service readiness
@@ -14,4 +16,10 @@ How to use git CLi, such as:
 - git commit
 - git config
 - git show
+
+
+## 11-05-2026
+
+branch → desenvolvimento paralelo → merge → conflito → resolução
+
 
