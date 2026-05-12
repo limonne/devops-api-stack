@@ -47,6 +47,8 @@ The backend failed with connection refused because PostgreSQL was still initiali
 Solution:
 Added a PostgreSQL healthcheck and used:
 
+```text
 depends_on:
   db:
     condition: service_healthy
+```
