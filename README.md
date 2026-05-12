@@ -60,10 +60,9 @@ depends_on:
   db:
     condition: service_healthy
 ```
-```text
+
 ## Stack:
 [![NGinx](https://img.shields.io/badge/nginx-009639?logo=nginx&logoColor=fff)](#)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/docker-compose-blue)](#)
-```
