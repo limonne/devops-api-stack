@@ -30,11 +30,13 @@ PostgreSQL :5432
 ## How to run
 docker compose up -d --build
 
+```text
 ## Test
 curl localhost:8080/api/health
 curl localhost:8080/api/visits
 curl localhost:8080/api/reset
 curl localhost:8080/api/version
+```
 
 ## Troubleshooting notes
 Backend starts before PostgreSQL is ready
