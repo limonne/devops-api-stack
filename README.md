@@ -20,12 +20,12 @@ PostgreSQL :5432
 - db: PostgreSQL database with persistent volume
 
 ## Endpoints
-```text
-/api/visits	increments and returns visit counter
-/api/health	checks database connectivity
-/api/reset	resets visit counter
-/api/version check version for backend
-```
+| Endpoint | Método | Descrição |
+|---|---|---|
+|/api/visits    |   GET |   increments and returns visit counter
+|/api/health    |   GET |	checks database connectivity
+|/api/reset     |   GET |	resets visit counter
+|/api/version   |   GET |   check version for backend
 
 ## How to run
 docker compose up -d --build
@@ -36,6 +36,14 @@ curl localhost:8080/api/health
 curl localhost:8080/api/visits
 curl localhost:8080/api/reset
 curl localhost:8080/api/version
+```
+
+```text
+## Test with jq
+curl -s localhost:8080/api/health | jq
+curl -s localhost:8080/api/visits | jq
+curl -s localhost:8080/api/reset | jq
+curl -s localhost:8080/api/version | jq
 ```
 
 ## Troubleshooting notes
@@ -51,4 +59,11 @@ Added a PostgreSQL healthcheck and used:
 depends_on:
   db:
     condition: service_healthy
+```
+```text
+## stack:
+![NGinx](https://img.shields.io/badge/nginx-009639?logo=nginx&logoColor=fff)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)
+![PostgreSQL](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-compose-blue)
 ```
