@@ -87,10 +87,10 @@ class App(BaseHTTPRequestHandler):
             data = {
                     "help":"Endpoints",
                     "visits":"Display the number of visits",
-                    "reset":"Reset the number of visits to zerp",
+                    "reset":"Reset the number of visits to zero",
                     "health":"Display if the connection to DB is OK/UNKNOWN/OFFLINE"
                     }
-
+            self.send_response(200)
         else:
 
             data = {"error": "not found"}
