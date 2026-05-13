@@ -82,6 +82,14 @@ class App(BaseHTTPRequestHandler):
         elif self.path == "/version":
             data = {"version":"2.1"}
             self.send_response(200)
+        
+        elif self.path == "/help":
+            data = {
+                    "help":"Endpoints",
+                    "visits":"Display the number of visits",
+                    "reset":"Reset the number of visits to zerp",
+                    "health":"Display if the connection to DB is OK/UNKNOWN/OFFLINE"
+                    }
 
         else:
 
