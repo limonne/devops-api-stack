@@ -14,3 +14,13 @@ jobs:
 
       - name: Show project files
         run: ls -la
+
+      - name: Check python syntax
+        run: python -m py_compile server.py
+
+      - name: Check docker compose config
+        run: docker compose config
+
+      - name: Check Docker build
+        run: docker build -t devops-api-backend .
+
