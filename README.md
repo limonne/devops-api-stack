@@ -66,3 +66,4 @@ depends_on:
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/docker-compose-blue)](#)
+[![CI](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml/badge.svg)](#)
