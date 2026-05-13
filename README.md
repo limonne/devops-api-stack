@@ -20,15 +20,18 @@ PostgreSQL :5432
 - db: PostgreSQL database with persistent volume
 
 ## Endpoints
+
 | Endpoint | Método | Descrição |
 |---|---|---|
-|/api/visits    |   GET |   increments and returns visit counter
-|/api/health    |   GET |	checks database connectivity
-|/api/reset     |   GET |	resets visit counter
-|/api/version   |   GET |   check version for backend
-
+| `/api/visits` | GET | increments and returns visit counter |
+| `/api/health` | GET | checks database connectivity |
+| `/api/reset` | GET | resets visit counter |
+| `/api/version` | GET | check version for backend 
+|
 ## How to run
+```bash
 docker compose up -d --build
+```
 
 ```text
 ## Test
