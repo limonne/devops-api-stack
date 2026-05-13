@@ -25,9 +25,6 @@ CREATE TABLE IF NOT EXISTS visits (
 
 conn.commit()
 
-#simulated error
-print("Hello Error
-
 cur.execute("SELECT COUNT(*) FROM visits")
 count = cur.fetchone()[0]
 
