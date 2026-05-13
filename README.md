@@ -1,4 +1,4 @@
-nas sncasijcacnmlkanwdjq odwamaos API Stack
+# DevOps API Stack
 
 A small DevOps lab project using Docker Compose to run a multi-service application with Nginx, a Python backend API and PostgreSQL.
 
