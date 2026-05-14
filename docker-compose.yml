@@ -1,13 +1,20 @@
+
 services:
 
   backend:
     build: .
     container_name: backend-db
     restart: always
+    
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
 
     depends_on:
-        db:
-          condition: service_healthy
+      db:
+        condition: service_healthy
 
   nginx:
     image: nginx
@@ -29,9 +36,9 @@ services:
     restart: always
 
     environment:
-      POSTGRES_DB: devops
-      POSTGRES_USER: devops
-      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
 
     volumes:
       - postgres-data:/var/lib/postgresql/data
