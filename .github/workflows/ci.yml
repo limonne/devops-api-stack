@@ -15,12 +15,30 @@ jobs:
       - name: Show project files
         run: ls -la
 
-      - name: Check python syntax
-        run: python -m py_compile server.py
-
       - name: Check docker compose config
         run: docker compose config
 
+      - name: Check python syntax
+        run: python -m py_compile server.py
+
+  build:
+    needs: validate
+    steps:
       - name: Check Docker build
         run: docker build -t devops-api-backend .
+
+  healthcheck:
+    needs: build
+    steps:
+      - name: Check if containers are up
+        run: docker ps
+
+      - name: Check backend responds
+        run: curl localhost:8080/api/visits
+
+      - name: Check DB Health
+        run: curl localhost:8080/api/health
+      
+      - name: Cleanup all
+        run: docker compose down
 
