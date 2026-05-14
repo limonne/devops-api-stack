@@ -44,6 +44,9 @@ jobs:
       - name: Start containers
         run: docker compose up -d
 
+      - name: Wait for services become healthy
+        run: docker compose ps --services --filter "status=running" | wc -l && sleep 5
+
       - name: Check backend responds
         run: curl localhost:8080/api/visits
 
