@@ -25,6 +25,9 @@ jobs:
     needs: validate
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
@@ -32,6 +35,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Check if containers are up
         run: docker ps
 
