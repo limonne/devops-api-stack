@@ -5,7 +5,7 @@ services:
   backend:
     build: .
     container_name: backend-db
-    #    restart: always
+    restart: always
     
     env_file: ".env"
 
@@ -16,7 +16,7 @@ services:
   nginx:
     image: nginx
     container_name: nginx-db
-    #    restart: always
+    restart: always
 
     env_file: ".env"
     
@@ -32,12 +32,12 @@ services:
   db:
     image: postgres:17
     container_name: postgres-db
-    #    restart: always
+    restart: always
 
     env_file: ".env"
 
     environment:
-      POSTGRES_DB: ${DB_HOST}
+      POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
 
