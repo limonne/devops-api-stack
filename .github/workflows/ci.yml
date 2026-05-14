@@ -8,26 +8,79 @@ jobs:
   validate:
     runs-on: ubuntu-latest
 
-    steps:
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
 
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Show project files
         run: ls -la
 
+      - name: Check docker compose config
+        run: docker compose config
+
       - name: Check python syntax
         run: python -m py_compile server.py
 
-      - name: Check docker compose config
-        run: docker compose config
-     
-        env:
-            DB_HOST: ${{ secrets.DB_HOST }}
-            DB_NAME: ${{ secrets.DB_NAME }}
-            DB_USER: ${{ secrets.DB_USER }}
-            DB_PASS: ${{ secrets.DB_PASS }}  
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Check Docker build
         run: docker build -t devops-api-backend .
+
+  healthcheck:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Check Docker build
+        run: docker build -t devops-api-backend .
+
+      - name: Start containers
+        run: docker compose up -d
+
+      - name: Wait for services become healthy
+        run: |
+            for i in {1..12}; do
+              if curl -fsS http://localhost:8080/api/health; then
+                exit 0
+              fi
+              docker compose ps
+              sleep 5
+              done
+              docker compose logs
+              exit 1
+
+      - name: Check backend responds
+        run: curl localhost:8080/api/visits
+
+      - name: Check DB Health
+        run: curl localhost:8080/api/health
+      
+      - name: Cleanup all
+        if: always()
+        run: docker compose down -v
 
