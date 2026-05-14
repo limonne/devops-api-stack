@@ -20,7 +20,7 @@ How to use git CLi, such as:
 
 ## 11-05-2026
 
-branch → desenvolvimento paralelo → merge → conflito → resolução
+branch → parallel development → merge → conflict → fix
 
 Added commands:
 
@@ -31,3 +31,15 @@ Added commands:
 
 How to develop maintaining integrity of the project
 Fix conflicts
+
+## 13-05-2026
+
+Markdown tables, code and text (correctly)
+PR with controlled merge
+Push to master prohibited, using rulesets
+GitHub Actions CI
+
+## 14-05-2016
+
+Removal of hardcoded secrets, so it uses Secrets and Variables from GitHub
+
