@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -28,15 +27,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Check docker compose config
-        run: docker compose config
-     
-        env:
-            DB_HOST: ${{ secrets.DB_HOST }}
-            DB_NAME: ${{ secrets.DB_NAME }}
-            DB_USER: ${{ secrets.DB_USER }}
-            DB_PASS: ${{ secrets.DB_PASS }} 
 
       - name: Check Docker build
         run: docker build -t devops-api-backend .
@@ -45,11 +35,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Check Docker build
-        run: docker build -t devops-api-backend .
-
       - name: Checkout repository
         uses: actions/checkout@v4
+      
+      - name: Check Docker build
+        run: docker build -t devops-api-backend .
 
       - name: Check if containers are up
         run: docker ps
@@ -61,5 +51,5 @@ jobs:
         run: curl localhost:8080/api/health
       
       - name: Cleanup all
-        run: docker compose down
+        run: docker compose down -v
 
