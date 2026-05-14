@@ -1,9 +1,13 @@
+version: '3'
+
 services:
 
   backend:
     build: .
     container_name: backend-db
-    restart: always
+    #    restart: always
+    
+    env_file: ".env"
 
     depends_on:
         db:
@@ -12,8 +16,10 @@ services:
   nginx:
     image: nginx
     container_name: nginx-db
-    restart: always
+    #    restart: always
 
+    env_file: ".env"
+    
     ports:
       - "8080:80"
 
@@ -26,12 +32,14 @@ services:
   db:
     image: postgres:17
     container_name: postgres-db
-    restart: always
+    #    restart: always
+
+    env_file: ".env"
 
     environment:
-      POSTGRES_DB: devops
-      POSTGRES_USER: devops
-      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: ${DB_HOST}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
 
     volumes:
       - postgres-data:/var/lib/postgresql/data

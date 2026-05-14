@@ -1,11 +1,12 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import psycopg2
+import os
 
-DB_HOST = "db"
-DB_NAME = "devops"
-DB_USER = "devops"
-DB_PASS = "secret"
+DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('DB_NAME')
+DB_USER = os.getenv('DB_USER')
+DB_PASS = os.getenv('DB_PASS')
 
 conn = psycopg2.connect(
     host=DB_HOST,
