@@ -23,12 +23,14 @@ jobs:
 
   build:
     needs: validate
+    runs-on: ubuntu-latest
     steps:
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
   healthcheck:
     needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: Check if containers are up
         run: docker ps
