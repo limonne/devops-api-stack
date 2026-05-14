@@ -41,8 +41,8 @@ jobs:
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
-      - name: Check if containers are up
-        run: docker ps
+      - name: Start containers
+        run: docker compose up -d
 
       - name: Check backend responds
         run: curl localhost:8080/api/visits
