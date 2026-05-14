@@ -58,9 +58,9 @@ jobs:
               fi
               docker compose ps
               sleep 5
-        done
-        docker compose logs
-        exit 1
+              done
+              docker compose logs
+              exit 1
 
       - name: Check backend responds
         run: curl localhost:8080/api/visits
