@@ -4,15 +4,15 @@ on:
   push:
   pull_request:
 
-  env:
-    DB_HOST: ${{ secrets.DB_HOST }}
-    DB_NAME: ${{ secrets.DB_NAME }}
-    DB_USER: ${{ secrets.DB_USER }}
-    DB_PASS: ${{ secrets.DB_PASS }}
-
 jobs:
   validate:
     runs-on: ubuntu-latest
+
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
 
     steps:
       - name: Checkout repository
@@ -30,6 +30,12 @@ jobs:
   build:
     needs: validate
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,6 +46,12 @@ jobs:
   healthcheck:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASS: ${{ secrets.DB_PASS }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
