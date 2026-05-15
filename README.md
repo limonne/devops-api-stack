@@ -15,6 +15,7 @@ PostgreSQL :5432
 ```
 
 ## Services
+
 - nginx: reverse proxy exposed on host port 8080
 - backend: Python API
 - db: PostgreSQL database with persistent volume
@@ -46,6 +47,7 @@ curl localhost:8080/api/help
 ```
 
 ## Test with jq
+
 ```bash
 curl -s localhost:8080/api/health | jq
 curl -s localhost:8080/api/visits | jq
