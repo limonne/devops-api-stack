@@ -12,7 +12,7 @@ conn = psycopg2.connect(
     host=DB_HOST,
     database=DB_NAME,
     user=DB_USER,
-    password=DB_PASS2
+    password=DB_PASS
 )
 
 cur = conn.cursor()
@@ -64,7 +64,7 @@ class App(BaseHTTPRequestHandler):
 
             self.send_response(200)
 
-        elif self.path == "/healt":
+        elif self.path == "/health":
             try:
                 cur.execute("SELECT 1")
                 result = cur.fetchone()[0]
