@@ -15,6 +15,7 @@ PostgreSQL :5432
 ```
 
 ## Services
+
 - nginx: reverse proxy exposed on host port 8080
 - backend: Python API
 - db: PostgreSQL database with persistent volume
@@ -27,6 +28,7 @@ PostgreSQL :5432
 | `/api/health` | GET | checks database connectivity |
 | `/api/reset` | GET | resets visit counter |
 | `/api/version` | GET | returns backend version |
+| `/api/help` | GET | returns all the commands available |
 
 ## How to run
 
@@ -41,14 +43,17 @@ curl localhost:8080/api/health
 curl localhost:8080/api/visits
 curl localhost:8080/api/reset
 curl localhost:8080/api/version
+curl localhost:8080/api/help
 ```
 
 ## Test with jq
+
 ```bash
 curl -s localhost:8080/api/health | jq
 curl -s localhost:8080/api/visits | jq
 curl -s localhost:8080/api/reset | jq
 curl -s localhost:8080/api/version | jq
+curl -s localhost:8080/api/help | jq
 ```
 
 ## CI Pipeline
