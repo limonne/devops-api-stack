@@ -26,23 +26,25 @@ PostgreSQL :5432
 | `/api/visits` | GET | increments and returns visit counter |
 | `/api/health` | GET | checks database connectivity |
 | `/api/reset` | GET | resets visit counter |
-| `/api/version` | GET | check version for backend 
-|
+| `/api/version` | GET | check version for backend |
+
 ## How to run
+
 ```bash
 docker compose up -d --build
 ```
 
-```text
 ## Test
+
+```bash
 curl localhost:8080/api/health
 curl localhost:8080/api/visits
 curl localhost:8080/api/reset
 curl localhost:8080/api/version
 ```
 
-```text
 ## Test with jq
+```bash
 curl -s localhost:8080/api/health | jq
 curl -s localhost:8080/api/visits | jq
 curl -s localhost:8080/api/reset | jq
@@ -69,4 +71,4 @@ depends_on:
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/docker-compose-blue)](#)
-[![CI](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml/badge.svg)](#)
+[![CI](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml)
