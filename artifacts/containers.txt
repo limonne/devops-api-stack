@@ -1,0 +1,4 @@
+CONTAINER ID   IMAGE                      COMMAND                  CREATED              STATUS                        PORTS                                     NAMES
+51428fc64b18   nginx                      "/docker-entrypoint.…"   About a minute ago   Up About a minute             0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   nginx-db
+99acaf0df02c   devops-api-stack-backend   "python3 server.py"      About a minute ago   Up About a minute                                                       backend-db
+b8d620281f3e   postgres:17                "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   5432/tcp                                  postgres-db
