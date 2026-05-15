@@ -21,12 +21,12 @@ PostgreSQL :5432
 
 ## Endpoints
 
-| Endpoint | Método | Descrição |
+| Endpoint | Method | Description |
 |---|---|---|
 | `/api/visits` | GET | increments and returns visit counter |
 | `/api/health` | GET | checks database connectivity |
 | `/api/reset` | GET | resets visit counter |
-| `/api/version` | GET | check version for backend |
+| `/api/version` | GET | returns backend version |
 
 ## How to run
 
@@ -51,8 +51,17 @@ curl -s localhost:8080/api/reset | jq
 curl -s localhost:8080/api/version | jq
 ```
 
+## CI Pipeline
+
+The GitHub Actions pipeline validates:
+
+- Python syntax
+- Docker Compose configuration
+- Docker image build
+- Full stack healthcheck
+
 ## Troubleshooting notes
-Backend starts before PostgreSQL is ready
+### Backend starts before PostgreSQL is ready
 
 Problem:
 The backend failed with connection refused because PostgreSQL was still initializing.
