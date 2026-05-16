@@ -1,18 +1,20 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-import psycopg2
 import os
 
-DB_HOST = os.getenv('DB_HOST')
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASS = os.getenv('DB_PASS')
+import psycopg2
+
+
+DB_HOST = os.getenv("DB_HOST")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
 
 conn = psycopg2.connect(
     host=DB_HOST,
     database=DB_NAME,
     user=DB_USER,
-    password=DB_PASS
+    password=DB_PASS,
 )
 
 cur = conn.cursor()
@@ -33,27 +35,33 @@ if count == 0:
     cur.execute("INSERT INTO visits (total) VALUES (0)")
     conn.commit()
 
+
 class App(BaseHTTPRequestHandler):
 
     def do_GET(self):
-
         if self.path == "/visits":
-
             cur.execute("SELECT total FROM visits WHERE id=1")
             visits = cur.fetchone()[0]
+
             visits += 1
+
             cur.execute(
                 "UPDATE visits SET total=%s WHERE id=1",
-                (visits,)
+                (visits,),
             )
+
             conn.commit()
+
             data = {"visits": visits}
             self.send_response(200)
+
         elif self.path == "/reset":
             cur.execute("UPDATE visits SET total=0")
             conn.commit()
+
             data = {"reset": "OK"}
             self.send_response(200)
+
         elif self.path == "/health":
             try:
                 cur.execute("SELECT 1")
@@ -63,28 +71,34 @@ class App(BaseHTTPRequestHandler):
                     data = {"database": "OK"}
                 else:
                     data = {"database": "UNKNOWN"}
+
                 self.send_response(200)
 
-            except Exception as e:
-                data = {"database": "OFFLINE", "error": str(e)}
+            except Exception as error:
+                data = {"database": "OFFLINE", "error": str(error)}
                 self.send_response(500)
+
         elif self.path == "/version":
             data = {"version": "2.1"}
             self.send_response(200)
+
         elif self.path == "/help":
             data = {
-                    "help": "Endpoints",
-                    "visits": "Display the number of visits",
-                    "reset": "Reset the number of visits to zero",
-                    "health": "Display if the connection to DB is OK/UNKNOWN/OFFLINE"
-                    }
+                "help": "Endpoints",
+                "visits": "Display the number of visits",
+                "reset": "Reset the number of visits to zero",
+                "health": "Display DB connection status",
+            }
             self.send_response(200)
+
         else:
             data = {"error": "not found"}
             self.send_response(404)
+
         self.send_header("Content-type", "application/json")
         self.end_headers()
         self.wfile.write(json.dumps(data).encode())
+
 
 server = HTTPServer(("0.0.0.0", 8080), App)
 server.serve_forever()

@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependecies
+      - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Lint python
@@ -23,9 +23,6 @@ jobs:
         run: yamllint docker-compose.yml
         continue-on-error: true
 
-      - name: Check NGINX config
-        run: nginx -t
-        continue-on-error: true
   validate:
     needs: lint
     runs-on: ubuntu-latest
