@@ -1,6 +1,6 @@
 # DevOps API Stack
 
-A small DevOps lab project using Docker Compose to run a multi-service application with Nginx, a Python backend API and PostgreSQL..
+A small DevOps lab project using Docker Compose to run a multi-service application with Nginx, a Python backend API and PostgreSQL.
 
 ## Architecture
 
@@ -80,7 +80,7 @@ depends_on:
     condition: service_healthy
 ```
 
-## Stack:
+## Stack
 [![NGinx](https://img.shields.io/badge/nginx-009639?logo=nginx&logoColor=fff)](#)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
