@@ -16,7 +16,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Lint python
-        run: pylint server.py
+        run: flake8 server.py
 
       - name: Lint yaml
         run: yamllint docker-compose.yml
