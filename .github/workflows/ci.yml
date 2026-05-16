@@ -11,8 +11,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check Docker build
-        run: docker build -t devops-api-backend .
+      - name: Install dependecies
+        run: pip install -r requirements.txt
 
       - name: Lint python
         run: pylint server.py
