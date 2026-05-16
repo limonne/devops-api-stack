@@ -80,6 +80,13 @@ depends_on:
     condition: service_healthy
 ```
 
+## caching
+# CI optimization
+Added actions/cache to cache pip packages.
+
+# Performance notes
+Although there’s no significant optimization in seconds for this project, it’s a foundation for the future.
+
 ## Stack
 [![NGinx](https://img.shields.io/badge/nginx-009639?logo=nginx&logoColor=fff)](#)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
