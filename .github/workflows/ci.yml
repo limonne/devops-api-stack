@@ -11,6 +11,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check Docker build
+        run: docker build -t devops-api-backend .
+
       - name: Lint python
         run: pylint server.py
 
@@ -21,8 +24,8 @@ jobs:
         run: nginx -t 
 
   validate:
+    needs: lint
     runs-on: ubuntu-latest
-
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
