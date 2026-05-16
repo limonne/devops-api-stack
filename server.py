@@ -52,7 +52,7 @@ class App(BaseHTTPRequestHandler):
         elif self.path == "/reset":
             cur.execute("UPDATE visits SET total=0")
             conn.commit()
-            data = {"reset":"OK"}
+            data = {"reset": "OK"}
             self.send_response(200)
         elif self.path == "/health":
             try:
@@ -69,14 +69,14 @@ class App(BaseHTTPRequestHandler):
                 data = {"database": "OFFLINE", "error": str(e)}
                 self.send_response(500)
         elif self.path == "/version":
-            data = {"version":"2.1"}
+            data = {"version": "2.1"}
             self.send_response(200)
         elif self.path == "/help":
             data = {
-                    "help":"Endpoints",
-                    "visits":"Display the number of visits",
-                    "reset":"Reset the number of visits to zero",
-                    "health":"Display if the connection to DB is OK/UNKNOWN/OFFLINE"
+                    "help": "Endpoints",
+                    "visits": "Display the number of visits",
+                    "reset": "Reset the number of visits to zero",
+                    "health": "Display if the connection to DB is OK/UNKNOWN/OFFLINE"
                     }
             self.send_response(200)
         else:

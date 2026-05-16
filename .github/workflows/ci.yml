@@ -1,3 +1,4 @@
+---
 name: CI
 
 on:
@@ -23,7 +24,7 @@ jobs:
         continue-on-error: true
 
       - name: Check NGINX config
-        run: nginx -t 
+        run: nginx -t
         continue-on-error: true
   validate:
     needs: lint
@@ -75,7 +76,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
@@ -99,7 +100,7 @@ jobs:
 
       - name: Check DB Health
         run: curl localhost:8080/api/health
-      
+
       - name: Create artifacts folder
         if: always()
         run: mkdir -p artifacts
@@ -126,4 +127,3 @@ jobs:
       - name: Cleanup all
         if: always()
         run: docker compose down -v
-
