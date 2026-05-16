@@ -1,1 +1,3 @@
-psycopg2-binary yamllint pylint
+psycopg2-binary
+yamllint
+pylint
