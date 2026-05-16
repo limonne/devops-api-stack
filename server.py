@@ -41,29 +41,19 @@ class App(BaseHTTPRequestHandler):
 
             cur.execute("SELECT total FROM visits WHERE id=1")
             visits = cur.fetchone()[0]
-
             visits += 1
-
             cur.execute(
                 "UPDATE visits SET total=%s WHERE id=1",
                 (visits,)
             )
-
             conn.commit()
-
             data = {"visits": visits}
-
             self.send_response(200)
-        
         elif self.path == "/reset":
-
             cur.execute("UPDATE visits SET total=0")
             conn.commit()
-
             data = {"reset":"OK"}
-
             self.send_response(200)
-
         elif self.path == "/health":
             try:
                 cur.execute("SELECT 1")
@@ -73,17 +63,14 @@ class App(BaseHTTPRequestHandler):
                     data = {"database": "OK"}
                 else:
                     data = {"database": "UNKNOWN"}
-
                 self.send_response(200)
 
             except Exception as e:
                 data = {"database": "OFFLINE", "error": str(e)}
                 self.send_response(500)
-        
         elif self.path == "/version":
             data = {"version":"2.1"}
             self.send_response(200)
-        
         elif self.path == "/help":
             data = {
                     "help":"Endpoints",
@@ -93,14 +80,10 @@ class App(BaseHTTPRequestHandler):
                     }
             self.send_response(200)
         else:
-
             data = {"error": "not found"}
-
             self.send_response(404)
-
         self.send_header("Content-type", "application/json")
         self.end_headers()
-
         self.wfile.write(json.dumps(data).encode())
 
 server = HTTPServer(("0.0.0.0", 8080), App)
