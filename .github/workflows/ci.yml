@@ -5,6 +5,21 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint python
+        run: pylint server.py
+
+      - name: Lint yaml
+        run: yamllint docker-compose.yml
+
+      - name: Check NGINX config
+        run: nginx -t 
+
   validate:
     runs-on: ubuntu-latest
 
