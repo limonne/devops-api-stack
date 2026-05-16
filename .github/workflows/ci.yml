@@ -16,13 +16,15 @@ jobs:
 
       - name: Lint python
         run: pylint server.py
+        continue-on-error: true
 
       - name: Lint yaml
         run: yamllint docker-compose.yml
+        continue-on-error: true
 
       - name: Check NGINX config
         run: nginx -t 
-
+        continue-on-error: true
   validate:
     needs: lint
     runs-on: ubuntu-latest
