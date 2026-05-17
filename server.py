@@ -44,6 +44,7 @@ START_TIME = time.time()
 REQUEST_COUNT = 0
 REQ_ENDPOINT = {}
 
+
 class App(BaseHTTPRequestHandler):
 
     def do_GET(self):
