@@ -1,9 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
-
+import socket
 import psycopg2
-
+import dns.resolver
+import dns.reversename
 
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
@@ -34,6 +35,9 @@ count = cur.fetchone()[0]
 if count == 0:
     cur.execute("INSERT INTO visits (total) VALUES (0)")
     conn.commit()
+
+p_ip = socket.gethostbyname(socket.gethostname())
+hostnm = dns.resolver.query(dns.reversename.from_address(p_ip), "PTR")[0]
 
 
 class App(BaseHTTPRequestHandler):
@@ -89,6 +93,13 @@ class App(BaseHTTPRequestHandler):
                 "reset": "Reset the number of visits to zero",
                 "health": "Display DB connection status",
             }
+            self.send_response(200)
+
+        elif self.path == "/whoami":
+            data = {
+                    "hostname": str(hostnm),
+                    "IP": str(p_ip)
+                    }
             self.send_response(200)
 
         else:
