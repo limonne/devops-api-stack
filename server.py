@@ -37,7 +37,7 @@ if count == 0:
     conn.commit()
 
 p_ip = socket.gethostbyname(socket.gethostname())
-hostnm = dns.resolver.query(dns.reversename.from_address(p_ip), "PTR")[0]
+hostnm = dns.resolver.resolve(dns.reversename.from_address(p_ip), "PTR")[0]
 
 
 class App(BaseHTTPRequestHandler):
@@ -97,9 +97,9 @@ class App(BaseHTTPRequestHandler):
 
         elif self.path == "/whoami":
             data = {
-                    "hostname": str(hostnm),
-                    "IP": str(p_ip)
-                    }
+                "hostname": str(hostnm),
+                "IP": str(p_ip)
+            }
             self.send_response(200)
 
         else:

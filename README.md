@@ -84,7 +84,8 @@ depends_on:
 ```
 
 ## caching
-# CI optimization
+
+### CI optimization
 Added actions/cache to cache pip packages.
 
 # Performance notes
