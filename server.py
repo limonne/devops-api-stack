@@ -42,7 +42,7 @@ p_ip = socket.gethostbyname(socket.gethostname())
 hostnm = dns.resolver.resolve(dns.reversename.from_address(p_ip), "PTR")[0]
 START_TIME = time.time()
 REQUEST_COUNT = 0
-REQUESTS_BY_ENDPOINT = {}
+REQ_ENDPOINT = {}
 
 class App(BaseHTTPRequestHandler):
 
@@ -51,7 +51,7 @@ class App(BaseHTTPRequestHandler):
 
         endpoint = self.path
         REQUEST_COUNT += 1
-        REQUESTS_BY_ENDPOINT[endpoint] = REQUESTS_BY_ENDPOINT.get(endpoint, 0) + 1
+        REQ_ENDPOINT[endpoint] = REQ_ENDPOINT.get(endpoint, 0) + 1
 
         if self.path == "/visits":
             cur.execute("SELECT total FROM visits WHERE id=1")
@@ -119,7 +119,7 @@ class App(BaseHTTPRequestHandler):
                 "ip": str(p_ip),
                 "uptime_seconds": uptime_seconds,
                 "total_requests": REQUEST_COUNT,
-                "requests_by_endpoint": REQUESTS_BY_ENDPOINT,
+                "requests_by_endpoint": REQ_ENDPOINT,
                 "version": "2.2",
                 "timestamp": datetime.datetime.now().isoformat(),
             }
