@@ -36,6 +36,8 @@ if count == 0:
     cur.execute("INSERT INTO visits (total) VALUES (0)")
     conn.commit()
 
+p_ip = socket.gethostbyname(socket.gethostname())
+hostnm = dns.resolver.query(dns.reversename.from_address(p_ip),"PTR")[0]
 
 class App(BaseHTTPRequestHandler):
 
@@ -93,8 +95,6 @@ class App(BaseHTTPRequestHandler):
             self.send_response(200)
 
         elif self.path == "/whoami":
-            p_ip = socket.gethostbyname(socket.gethostname())
-            hostnm = dns.resolver.query(dns.reversename.from_address(p_ip),"PTR")[0]
             data = {
                     "hostname": str(hostnm), 
                     "IP": str(p_ip)
