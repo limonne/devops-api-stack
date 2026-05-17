@@ -2,6 +2,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
 import socket
+import time
+import datetime
 import psycopg2
 import dns.resolver
 import dns.reversename
@@ -38,11 +40,20 @@ if count == 0:
 
 p_ip = socket.gethostbyname(socket.gethostname())
 hostnm = dns.resolver.resolve(dns.reversename.from_address(p_ip), "PTR")[0]
+START_TIME = time.time()
+REQUEST_COUNT = 0
+REQ_ENDPOINT = {}
 
 
 class App(BaseHTTPRequestHandler):
 
     def do_GET(self):
+        global REQUEST_COUNT
+
+        endpoint = self.path
+        REQUEST_COUNT += 1
+        REQ_ENDPOINT[endpoint] = REQ_ENDPOINT.get(endpoint, 0) + 1
+
         if self.path == "/visits":
             cur.execute("SELECT total FROM visits WHERE id=1")
             visits = cur.fetchone()[0]
@@ -83,7 +94,7 @@ class App(BaseHTTPRequestHandler):
                 self.send_response(500)
 
         elif self.path == "/version":
-            data = {"version": "2.1"}
+            data = {"version": "2.2"}
             self.send_response(200)
 
         elif self.path == "/help":
@@ -99,6 +110,19 @@ class App(BaseHTTPRequestHandler):
             data = {
                 "hostname": str(hostnm),
                 "IP": str(p_ip)
+            }
+            self.send_response(200)
+        elif self.path == "/metrics":
+            uptime_seconds = int(time.time() - START_TIME)
+
+            data = {
+                "hostname": str(hostnm),
+                "ip": str(p_ip),
+                "uptime_seconds": uptime_seconds,
+                "total_requests": REQUEST_COUNT,
+                "requests_by_endpoint": REQ_ENDPOINT,
+                "version": "2.2",
+                "timestamp": datetime.datetime.now().isoformat(),
             }
             self.send_response(200)
 

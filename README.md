@@ -29,6 +29,7 @@ PostgreSQL :5432
 | `/api/reset` | GET | resets visit counter |
 | `/api/version` | GET | returns backend version |
 | `/api/help` | GET | returns all the commands available |
+| `/api/metrics` | GET | returns metrics for Endpoint requests, hostname, etc |
 | `/api/whoami` | GET | returns the hostname and IP from current backend |
 
 ## How to run
@@ -46,6 +47,7 @@ curl localhost:8080/api/reset
 curl localhost:8080/api/version
 curl localhost:8080/api/help
 curl localhost:8080/api/whoami
+curl localhost:8080/api/metrics
 ```
 
 ## Test with jq
@@ -57,6 +59,7 @@ curl -s localhost:8080/api/reset | jq
 curl -s localhost:8080/api/version | jq
 curl -s localhost:8080/api/help | jq
 curl -s localhost:8080/api/whoami | jq
+curl -s localhost:8080/api/metrics | jq
 ```
 
 ## CI Pipeline
