@@ -3,7 +3,8 @@ import json
 import os
 import socket
 import psycopg2
-import dns.resolver,dns.reversename
+import dns.resolver
+import dns.reversename
 
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
@@ -92,9 +93,10 @@ class App(BaseHTTPRequestHandler):
             self.send_response(200)
 
         elif self.path == "/whoami":
-            p_ip=socket.gethostbyname(socket.gethostname())
+            p_ip = socket.gethostbyname(socket.gethostname())
+            hostnm = dns.resolver.query(dns.reversename.from_address(p_ip),"PTR")[0]
             data = {
-                    "hostname": str(dns.resolver.query(dns.reversename.from_address(p_ip),"PTR")[0]),
+                    "hostname": str(hostnm), 
                     "IP": str(p_ip)
                     }
             self.send_response(200)
