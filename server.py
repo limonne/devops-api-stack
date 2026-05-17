@@ -1,9 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
-
+import socket
 import psycopg2
-
+import dns.resolver,dns.reversename
 
 DB_HOST = os.getenv("DB_HOST")
 DB_NAME = os.getenv("DB_NAME")
@@ -89,6 +89,14 @@ class App(BaseHTTPRequestHandler):
                 "reset": "Reset the number of visits to zero",
                 "health": "Display DB connection status",
             }
+            self.send_response(200)
+
+        elif self.path == "/whoami":
+            p_ip=socket.gethostbyname(socket.gethostname())
+            data = {
+                    "hostname": str(dns.resolver.query(dns.reversename.from_address(p_ip),"PTR")[0]),
+                    "IP": str(p_ip)
+                    }
             self.send_response(200)
 
         else:
