@@ -66,7 +66,7 @@ curl -s localhost:8080/api/metrics | jq
 
 The GitHub Actions pipeline validates:
 
-- Python syntax
+- Python syntax with Matrix
 - Docker Compose configuration
 - Docker image build
 - Full stack healthcheck
