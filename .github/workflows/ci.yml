@@ -36,6 +36,7 @@ jobs:
         run: flake8 server.py
 
       - name: Lint yaml
+        if: matrix.linter == 'yaml'
         run: yamllint docker-compose.yml
 
   validate:
