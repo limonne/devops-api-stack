@@ -34,7 +34,7 @@ jobs:
         run: yamllint docker-compose.yml
 
   validate:
-    needs: build
+    needs: lint
     runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
