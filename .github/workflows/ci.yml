@@ -26,7 +26,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Lint python
-        if: matrix.linter == 'pythona'
+        if: matrix.linter == 'python'
         run: flake8 server.py
 
       - name: Lint yaml
