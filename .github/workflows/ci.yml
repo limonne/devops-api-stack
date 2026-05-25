@@ -8,9 +8,6 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        linter: [python, yaml]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,20 +18,17 @@ jobs:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('./requirements.txt') }}
           restore-keys: ${{ runner.os }}-pip-
-
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Lint python
-        if: matrix.linter == 'pythona'
         run: flake8 server.py
 
       - name: Lint yaml
-        if: matrix.linter == 'yaml'
         run: yamllint docker-compose.yml
 
   validate:
-    needs: build
+    needs: lint
     runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
