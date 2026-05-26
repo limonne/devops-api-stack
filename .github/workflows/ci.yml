@@ -17,7 +17,7 @@ jobs:
       matrix:
         linter: [python, yaml]
 
-    steps:
+  steps:
 
       - name: Checkout repository
         run: actions/checkout@v4
