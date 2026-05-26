@@ -1,45 +1,36 @@
 name: Lint workflow
-  
-on: 
+
+on:
   workflow_call:
     inputs:
       python-version:
-        description: 'Python version'
+        description: "Python version"
         required: true
         type: string
-    outputs:
-      python:
-        description: Output the exit code for Lint python
-        value: ${{ jobs.outputs.python_code }}
-      yaml:
-        description: Output the exit code for Lint yaml
-        value: ${{ jobs.outputs.yaml_code }}
 
 jobs:
-  ReusableMatrixforLint:
+  lint:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         linter: [python, yaml]
-    runs-on: ${{ inputs.python-version }}
-
-    outputs:
-      python_code: ${{ steps.lintPython.exit_code }}
-      yaml_code: ${{ steps.lintYaml.exit_code }}
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python composite
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Setup Python dependencies
         uses: ./.github/actions/setup-python
 
-        #      - name: Lint python
-      - id: lintPython
+      - name: Lint python
         if: matrix.linter == 'python'
-        run: flake8 server.py >> $GITHUB_OUTPUT
+        run: flake8 server.py
 
-        #      - name: Lint yaml
-      - id: lintYaml
+      - name: Lint yaml
         if: matrix.linter == 'yaml'
-        run: yamllint docker-compose.yml >> $GITHUB_OUTPUT
+        run: yamllint docker-compose.yml
