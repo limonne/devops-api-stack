@@ -13,6 +13,8 @@ concurrency:
 jobs:
   call-lint:
     uses: ./.github/workflows/lint.yml
+    with: 
+      python-version: "3.12"
 
   validate:
     needs: call-lint
