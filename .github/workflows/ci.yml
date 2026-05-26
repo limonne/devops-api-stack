@@ -108,3 +108,13 @@ jobs:
       - name: Cleanup all
         if: always()
         run: docker compose down -v
+
+    deploy-preview:
+    needs: healthcheck
+    runs-on: ubuntu-latest
+    environment:
+      name: DEVOPS-API-STACK
+    steps:
+      - name: Simulate deploy
+        run: echo "Deploy gated by environment approval"
+
