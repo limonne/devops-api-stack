@@ -70,6 +70,8 @@ The GitHub Actions pipeline validates:
 - Docker Compose configuration
 - Docker image build
 - Full stack healthcheck
+- Added Reusable Workflows
+- Added Composite Actions
 
 ## Troubleshooting notes
 ### Backend starts before PostgreSQL is ready
