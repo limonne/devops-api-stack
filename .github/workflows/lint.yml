@@ -34,12 +34,12 @@ jobs:
       - name: Setup Python composite
         uses: ./.github/actions/setup-python
 
-      - name: Lint python
+        #      - name: Lint python
       - id: lintPython
         if: matrix.linter == 'python'
         run: flake8 server.py >> $GITHUB_OUTPUT
 
-      - name: Lint yaml
+        #      - name: Lint yaml
       - id: lintYaml
         if: matrix.linter == 'yaml'
         run: yamllint docker-compose.yml >> $GITHUB_OUTPUT
