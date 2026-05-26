@@ -12,17 +12,18 @@ concurrency:
 
 jobs:
   lint:
-    strategy:
+  runs-on: ubuntu-latest
+  strategy:
       matrix:
         linter: [python, yaml]
 
-    call-checkout:
-      uses: ./.github/actions/checkout.yml
-
     steps:
 
+      - name: Checkout repo
+        run: actions/checkout@v4
+        
       - name: Setup Python composite
-        uses: -/.github/actions/setup-python/actions.yml
+        uses: ./.github/actions/setup-python/action.yml
 
       - name: Lint python
         if: matrix.linter == 'python'
@@ -34,17 +35,18 @@ jobs:
 
   validate:
     needs: lint
+    runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
 
-    call-checkout:
-      uses: ./.github/actions/checkout.yml
-
     steps:
 
+      - name: Checkout repo
+        run: actions/checkout@v4
+        
       - name: Show project files
         run: ls -la
 
@@ -63,33 +65,35 @@ jobs:
 
   build:
     needs: validate
+    runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
 
-    call-checkout:
-      uses: ./.github/actions/checkout.yml
-
     steps:
 
+      - name: Checkout repo
+        run: actions/checkout@v4
+        
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
   healthcheck:
     needs: build
+    runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
 
-    call-checkout:
-      uses: ./.github/actions/checkout.yml
-
     steps:
 
+      - name: Checkout repo
+        run: actions/checkout@v4
+        
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
