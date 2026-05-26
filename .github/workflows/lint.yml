@@ -4,9 +4,10 @@ on:
   workflow_call:
     inputs:
       jobs:
-        description: 'Python version'
-        required: true
-        type: string
+        python-version:
+          description: 'Python version'
+          required: true
+          type: string
 
 jobs:
   ReusableMatrixforLint:
