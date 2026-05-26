@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   call-lint:
-  uses: ./.github/workflows/lint.yml
+    uses: ./.github/workflows/lint.yml
 
   validate:
     needs: call-lint
