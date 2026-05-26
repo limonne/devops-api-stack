@@ -7,6 +7,13 @@ on:
         description: 'Python version'
         required: true
         type: string
+    outputs:
+      python:
+        description: Output the exit code for Lint python
+        value: ${{ jobs.outputs.python_code }}
+      yaml:
+        description: Output the exit code for Lint yaml
+        value: ${{ jobs.outputs.yaml_code }}
 
 jobs:
   ReusableMatrixforLint:
@@ -14,6 +21,11 @@ jobs:
       matrix:
         linter: [python, yaml]
     runs-on: ${{ inputs.python-version }}
+
+    outputs:
+      python_code: ${{ steps.lintPython.exit_code }}
+      yaml_code: ${{ steps.lintYaml.exit_code }}
+
     steps:
 
       - name: Checkout repository
@@ -23,9 +35,11 @@ jobs:
         uses: ./.github/actions/setup-python
 
       - name: Lint python
+      - id: lintPython
         if: matrix.linter == 'python'
-        run: flake8 server.py
+        run: flake8 server.py >> $GITHUB_OUTPUT
 
       - name: Lint yaml
+      - id: lintYaml
         if: matrix.linter == 'yaml'
-        run: yamllint docker-compose.yml
+        run: yamllint docker-compose.yml >> $GITHUB_OUTPUT
