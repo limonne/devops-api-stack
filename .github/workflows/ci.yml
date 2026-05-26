@@ -11,30 +11,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        linter: [python, yaml]
-
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python composite
-        uses: ./.github/actions/setup-python
-
-      - name: Lint python
-        if: matrix.linter == 'python'
-        run: flake8 server.py
-
-      - name: Lint yaml
-        if: matrix.linter == 'yaml'
-        run: yamllint docker-compose.yml
+  call-lint:
+    uses: ./.github/workflows/lint.yml
+    with: 
+      python-version: "3.12"
 
   validate:
-    needs: lint
+    needs: call-lint
     runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
