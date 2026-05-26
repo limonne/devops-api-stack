@@ -8,24 +8,24 @@ on:
         required: true
         type: string
 
-    jobs:
-      ReusableMatrixforLint:
-        strategy:
-          matrix:
-            linter: [python, yaml]
-        runs-on: ${{ inputs.jobs }}
-        steps:
+jobs:
+  ReusableMatrixforLint:
+    strategy:
+      matrix:
+        linter: [python, yaml]
+    runs-on: ${{ inputs.jobs }}
+    steps:
 
-          - name: Checkout repository
-            uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          - name: Setup Python composite
-            uses: ./.github/actions/setup-python
+      - name: Setup Python composite
+        uses: ./.github/actions/setup-python
 
-          - name: Lint python
-            if: matrix.linter == 'python'
-            run: flake8 server.py
+      - name: Lint python
+        if: matrix.linter == 'python'
+        run: flake8 server.py
 
-          - name: Lint yaml
-            if: matrix.linter == 'yaml'
-            run: yamllint docker-compose.yml
+      - name: Lint yaml
+        if: matrix.linter == 'yaml'
+        run: yamllint docker-compose.yml
