@@ -7,22 +7,28 @@ runs:
 
     - name: Check backend responds
       run: curl localhost:8080/api/visits
+      shell: bash
 
     - name: Check DB Health
       run: curl localhost:8080/api/health
+      shell: bash
 
     - name: Create artifacts folder
       if: always()
       run: mkdir -p artifacts
+      shell: bash
 
     - name: Save container status
       if: always()
       run: docker ps > artifacts/containers.txt
+      shell: bash
 
     - name: Save compose logs
       if: always()
       run: docker compose logs > artifacts/compose.log
+      shell: bash
 
     - name: Save health response
       if: always()
       run: curl -s localhost:8080/api/health > artifacts/health.json || true
+      shell: bash
