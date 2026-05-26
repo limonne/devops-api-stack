@@ -12,16 +12,16 @@ concurrency:
 
 jobs:
   lint:
-  runs-on: ubuntu-latest
-  strategy:
+	runs-on: ubuntu-latest
+	strategy:
       matrix:
         linter: [python, yaml]
 
-  steps:
+	steps:
 
       - name: Checkout repository
-        run: actions/checkout@v4
-        
+        uses: actions/checkout@v4
+
       - name: Setup Python composite
         uses: ./.github/actions/setup-python/action.yml
 
@@ -45,8 +45,8 @@ jobs:
     steps:
 
       - name: Checkout repository
-        run: actions/checkout@v4
-        
+        uses: actions/checkout@v4
+
       - name: Show project files
         run: ls -la
 
@@ -75,8 +75,8 @@ jobs:
     steps:
 
       - name: Checkout repository
-        run: actions/checkout@v4
-        
+        uses: actions/checkout@v4
+
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
@@ -92,8 +92,8 @@ jobs:
     steps:
 
       - name: Checkout repository
-        run: actions/checkout@v4
-        
+        uses: actions/checkout@v4
+
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
