@@ -19,7 +19,7 @@ jobs:
 
     steps:
 
-      - name: Checkout repo
+      - name: Checkout repository
         run: actions/checkout@v4
         
       - name: Setup Python composite
@@ -44,7 +44,7 @@ jobs:
 
     steps:
 
-      - name: Checkout repo
+      - name: Checkout repository
         run: actions/checkout@v4
         
       - name: Show project files
@@ -74,7 +74,7 @@ jobs:
 
     steps:
 
-      - name: Checkout repo
+      - name: Checkout repository
         run: actions/checkout@v4
         
       - name: Check Docker build
@@ -91,7 +91,7 @@ jobs:
 
     steps:
 
-      - name: Checkout repo
+      - name: Checkout repository
         run: actions/checkout@v4
         
       - name: Check Docker build
