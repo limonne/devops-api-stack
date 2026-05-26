@@ -3,18 +3,17 @@ name: Lint workflow
 on: 
   workflow_call:
     inputs:
-      jobs:
-        python-version:
-          description: 'Python version'
-          required: true
-          type: string
+      python-version:
+        description: 'Python version'
+        required: true
+        type: string
 
 jobs:
   ReusableMatrixforLint:
     strategy:
       matrix:
         linter: [python, yaml]
-    runs-on: ${{ inputs.jobs }}
+    runs-on: ${{ inputs.python-version }}
     steps:
 
       - name: Checkout repository
