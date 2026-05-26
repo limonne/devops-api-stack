@@ -17,12 +17,12 @@ jobs:
         linter: [python, yaml]
 
     call-checkout:
-      uses: .github/actions/checkout.yml
+      uses: ./.github/actions/checkout.yml
 
     steps:
 
       - name: Setup Python composite
-        uses: .github/actions/setup-python/actions.yml
+        uses: -/.github/actions/setup-python/actions.yml
 
       - name: Lint python
         if: matrix.linter == 'python'
@@ -41,7 +41,7 @@ jobs:
       DB_PASS: ${{ secrets.DB_PASS }}
 
     call-checkout:
-      uses: .github/actions/checkout.yml
+      uses: ./.github/actions/checkout.yml
 
     steps:
 
@@ -70,7 +70,7 @@ jobs:
       DB_PASS: ${{ secrets.DB_PASS }}
 
     call-checkout:
-      uses: .github/actions/checkout.yml
+      uses: ./.github/actions/checkout.yml
 
     steps:
 
@@ -86,7 +86,7 @@ jobs:
       DB_PASS: ${{ secrets.DB_PASS }}
 
     call-checkout:
-      uses: .github/actions/checkout.yml
+      uses: ./.github/actions/checkout.yml
 
     steps:
 
