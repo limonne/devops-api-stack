@@ -12,12 +12,12 @@ concurrency:
 
 jobs:
   lint:
-	runs-on: ubuntu-latest
-	strategy:
-      matrix:
-        linter: [python, yaml]
+  runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      linter: [python, yaml]
 
-	steps:
+    steps:
 
       - name: Checkout repository
         uses: actions/checkout@v4
