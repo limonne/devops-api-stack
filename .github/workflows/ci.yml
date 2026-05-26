@@ -12,24 +12,17 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         linter: [python, yaml]
 
+    call-checkout:
+      uses: .github/actions/checkout.yml
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
-      - name: Cache PIP packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('./requirements.txt') }}
-          restore-keys: ${{ runner.os }}-pip-
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Setup Python composite
+        uses: .github/actions/setup-python/actions.yml
 
       - name: Lint python
         if: matrix.linter == 'python'
@@ -41,16 +34,16 @@ jobs:
 
   validate:
     needs: lint
-    runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
 
+    call-checkout:
+      uses: .github/actions/checkout.yml
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Show project files
         run: ls -la
@@ -70,32 +63,32 @@ jobs:
 
   build:
     needs: validate
-    runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
 
+    call-checkout:
+      uses: .github/actions/checkout.yml
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
   healthcheck:
     needs: build
-    runs-on: ubuntu-latest
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_NAME: ${{ secrets.DB_NAME }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASS: ${{ secrets.DB_PASS }}
 
+    call-checkout:
+      uses: .github/actions/checkout.yml
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Check Docker build
         run: docker build -t devops-api-backend .
