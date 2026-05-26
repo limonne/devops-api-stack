@@ -17,7 +17,6 @@ How to use git CLi, such as:
 - git config
 - git show
 
-
 ## 11-05-2026
 
 branch → parallel development → merge → conflict → fix
@@ -43,3 +42,11 @@ GitHub Actions CI
 
 Removal of hardcoded secrets, so it uses Secrets and Variables from GitHub
 
+## 26-05-2026
+
+Added commands:
+
+- git switch
+
+Reusable Workflows
+Composite Actions
