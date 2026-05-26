@@ -1,9 +1,9 @@
 on: workflow_call
 jobs:
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      linter: [python, yaml]
+  ReusableMatrixforLint:
+    strategy:
+      matrix:
+        linter: [python, yaml]
 
   steps:
 
