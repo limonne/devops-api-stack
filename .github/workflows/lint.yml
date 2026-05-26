@@ -1,0 +1,23 @@
+on:
+  workflow_call:
+    jobs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        linter: [python, yaml]
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python composite
+        uses: ./.github/actions/setup-python
+
+      - name: Lint python
+        if: matrix.linter == 'python'
+        run: flake8 server.py
+
+      - name: Lint yaml
+        if: matrix.linter == 'yaml'
+        run: yamllint docker-compose.yml
