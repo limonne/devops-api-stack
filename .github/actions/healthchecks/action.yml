@@ -1,0 +1,28 @@
+name: Health Checks
+
+runs:
+  using: composite
+
+  steps:
+
+    - name: Check backend responds
+      run: curl localhost:8080/api/visits
+
+    - name: Check DB Health
+      run: curl localhost:8080/api/health
+
+    - name: Create artifacts folder
+      if: always()
+      run: mkdir -p artifacts
+
+    - name: Save container status
+      if: always()
+      run: docker ps > artifacts/containers.txt
+
+    - name: Save compose logs
+      if: always()
+      run: docker compose logs > artifacts/compose.log
+
+    - name: Save health response
+      if: always()
+      run: curl -s localhost:8080/api/health > artifacts/health.json || true
