@@ -96,9 +96,31 @@ Added actions/cache to cache pip packages.
 # Performance notes
 Although there’s no significant optimization in seconds for this project, it’s a foundation for the future.
 
+## Releases
+
+v1.0.0
+Docker Compose + API + PostgreSQL + GitHub Actions
+
+v2.0.0
+Terraform Infrastructure Foundation
+
+### Check specific version
+
+```bash
+git fetch --tags
+git switch --detach v2.0.0
+```
+
+Back to dev environment:
+
+```bash
+git switch main
+```
+
 ## Stack
 [![NGinx](https://img.shields.io/badge/nginx-009639?logo=nginx&logoColor=fff)](#)
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/docker-compose-blue)](#)
 [![CI](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml)
+[![Terraform](https://img.shields.io/badge/Terraform-844FBA?logo=terraform&logoColor=fff)](#)
