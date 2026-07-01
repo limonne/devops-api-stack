@@ -1,0 +1,8 @@
+terraform {
+  backend "s3" {
+    bucket       = "devops-api-stack-tfstate"
+    key          = "dev/terraform.tfstate"
+    region       = "eu-west-1"
+    use_lockfile = true
+  }
+}
