@@ -8,9 +8,9 @@ Inside the Kubernetes folder you can find Namespace, Deployments, Services and D
 
 ## How to execute
 
-´´´
+```
 kubectl apply -f namespaces/
 kubectl apply -f deployments/
 kubectl apply -f services/
-´´´
+```
 
