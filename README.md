@@ -123,4 +123,5 @@ git switch main
 [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/docker-compose-blue)](#)
 [![CI](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml/badge.svg)](https://github.com/limonne/devops-api-stack/actions/workflows/ci.yml)
-[![Terraform](https://img.shields.io/badge/Terraform-844FBA?logo=terraform&logoColor=fff)](#)
+[![Terraform](https://img.shields.io/badge/Terraform-844FBA?logo=terraform&logoColor=fff)](https://github.com/limonne/devops-api-stack/tree/master/terraform)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=fff)](https://github.com/limonne/devops-api-stack/tree/master/kubernetes)
