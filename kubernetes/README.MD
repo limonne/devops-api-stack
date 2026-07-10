@@ -14,3 +14,13 @@ kubectl apply -f deployments/
 kubectl apply -f services/
 ```
 
+## Kubernetes Networking
+
+- ClusterIP Services
+- NodePort Services
+- CoreDNS
+- Ingress NGINX
+- Gateway API
+- Gateway Controller
+- HTTPRoute
+- Network Policies
