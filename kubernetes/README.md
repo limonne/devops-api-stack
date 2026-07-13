@@ -24,3 +24,14 @@ kubectl apply -f services/
 - Gateway Controller
 - HTTPRoute
 - Network Policies
+
+## Kubernetes Storage
+
+- Persistent Volume
+- Persistent Volume Claim
+- Storage Class
+- Volumes
+- StateFulSets
+- Headless Service
+- Dynamic Provisioning
+- Deployment vs StateFulSets
