@@ -12,6 +12,15 @@ Inside the Kubernetes folder you can find Namespace, Deployments, Services and D
 kubectl apply -f namespaces/
 kubectl apply -f deployments/
 kubectl apply -f services/
+kubectl apply -f gateway/
+kubectl apply -f ingress/
+kubectl apply -f networkpolicy/
+kubectl apply -f persistentvolume/
+kubectl apply -f persistentvolumeclaim/
+kubectl apply -f routes/
+kubectl apply -f statefulsets/
+kubectl apply -f storageclass/
+kubectl apply -f volumes/
 ```
 
 ## Kubernetes Networking
