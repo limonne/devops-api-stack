@@ -44,3 +44,12 @@ kubectl apply -f volumes/
 - Headless Service
 - Dynamic Provisioning
 - Deployment vs StateFulSets
+
+## Kubernetes Schedule
+
+- Node Selector
+- Node Affinity
+- Node Taints
+- Pod Tolerations
+- RBAC
+- Troubleshooting

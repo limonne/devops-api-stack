@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Node
+metadata:
+  labels:
+    beta.kubernetes.io/arch: amd64
+    beta.kubernetes.io/os: linux
+    kubernetes.io/hostname: super-node
+    kubernetes.io/os: linux
+    name: super-node
+    node-role.kubernetes.io/control-plane: ""
+  name: super-node
