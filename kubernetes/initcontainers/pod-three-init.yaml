@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nginx-three-init
+
+spec:
+
+  initContainers:
+
+  - name: init-one
+
+    image: busybox
+
+    command:
+      - sh
+      - -c
+      - |
+        echo "Primeiro Init"
+        sleep 3
+
+  - name: init-two
+
+    image: busybox
+
+    command:
+      - sh
+      - -c
+      - |
+        echo "Segundo Init"
+        sleep 3
+
+  - name: init-three
+
+    image: busybox
+
+    command:
+      - sh
+      - -c
+      - |
+        echo "Terceiro Init e ultimo"
+        sleep 3
+
+  containers:
+
+  - name: nginx
+
+    image: nginx
