@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: nginx-two-init
+
+spec:
+
+  initContainers:
+
+  - name: init-one
+
+    image: busybox
+
+    command:
+      - sh
+      - -c
+      - |
+        echo "Primeiro Init"
+        sleep 5
+
+  - name: init-two
+
+    image: busybox
+
+    command:
+      - sh
+      - -c
+      - |
+        echo "Segundo Init"
+        sleep 5
+
+  containers:
+
+  - name: nginx
+
+    image: nginx

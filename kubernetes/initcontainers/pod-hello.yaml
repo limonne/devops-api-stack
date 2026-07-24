@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: init-hello
+
+spec:
+
+  initContainers:
+
+  - name: init-message
+
+    image: busybox
+
+    command:
+      - sh
+      - -c
+      - |
+        echo "Hello DevOps" > /cache/hello.txt
+        sleep 10
+
+    volumeMounts:
+    - name: cache
+      mountPath: /cache
+
+  containers:
+  - name: busybox
+    image: busybox
+    command:
+      - sleep
+      - "3600"
+
+    volumeMounts:
+    - name: cache
+      mountPath: /cache
+
+  volumes:
+  - name: cache
+    emptyDir: {}
