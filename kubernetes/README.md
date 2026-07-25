@@ -20,6 +20,7 @@ Examples include:
 - Security
 - Health Checks
 - Multi-container Pods
+- Workloads
 
 ## Learning Approach
 
@@ -75,10 +76,8 @@ kubectl apply -f volumes/
 - Persistent Volume Claim
 - Storage Class
 - Volumes
-- StatefulSets
 - Headless Service
 - Dynamic Provisioning
-- Deployment vs StateFulSets
 
 ## Kubernetes Scheduling & Security
 
@@ -106,4 +105,10 @@ kubectl apply -f volumes/
 - HTTP Probes
 - Health Check Lifecycle
 
+## kubernetes Workloads
 
+- Cronjobs
+- Jobs
+- DaemonSets
+- StatefulSets
+- Deployments
