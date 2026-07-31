@@ -112,3 +112,13 @@ kubectl apply -f volumes/
 - DaemonSets
 - StatefulSets
 - Deployments
+
+## Kubernetes cluster laboratory
+
+The project is tested on a kubeadm cluster composed of:
+
+- Ubuntu AMD64 control plane
+- Debian ARM64 worker
+- Flannel CNI
+- containerd runtime
+- Kubernetes 1.35
