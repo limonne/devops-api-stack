@@ -1,0 +1,42 @@
+replicaCount: 3
+
+image:
+  repository: nginx
+  tag: stable-alpine
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+config:
+  message: "Production package"
+
+secret:
+  username: prod-package-user
+  password: prod-package-password
+
+probes:
+  startup:
+    enabled: true
+    failureThreshold: 12
+    periodSeconds: 5
+
+  readiness:
+    enabled: true
+    initialDelaySeconds: 3
+    periodSeconds: 5
+
+  liveness:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+  limits:
+    cpu: 300m
+    memory: 192Mi

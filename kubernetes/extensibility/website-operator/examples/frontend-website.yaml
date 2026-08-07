@@ -1,0 +1,12 @@
+apiVersion: lab.devops/v1alpha1
+kind: Website
+
+metadata:
+  name: frontend
+  namespace: operator-lab
+
+spec:
+  image: nginx:stable-alpine
+  replicas: 2
+  message: "Website gerido pelo Operator"
+  enabled: true
