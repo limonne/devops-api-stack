@@ -1,0 +1,42 @@
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: stable-alpine
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+config:
+  message: "Default package"
+
+secret:
+  username: package-user
+  password: package-password
+
+probes:
+  startup:
+    enabled: true
+    failureThreshold: 12
+    periodSeconds: 5
+
+  readiness:
+    enabled: true
+    initialDelaySeconds: 2
+    periodSeconds: 5
+
+  liveness:
+    enabled: true
+    initialDelaySeconds: 10
+    periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+
+  limits:
+    cpu: 200m
+    memory: 128Mi

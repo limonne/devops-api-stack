@@ -1,0 +1,132 @@
+---
+# Source: devops-web/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+
+metadata:
+  name: audit-web-secret
+
+  labels:
+    app.kubernetes.io/name: devops-web
+    app.kubernetes.io/instance: audit-web
+
+type: Opaque
+
+stringData:
+  LAB_USERNAME: "prod-package-user"
+  LAB_PASSWORD: "prod-package-password"
+
+---
+# Source: devops-web/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: audit-web-config
+
+  labels:
+    app.kubernetes.io/name: devops-web
+    app.kubernetes.io/instance: audit-web
+
+data:
+  MESSAGE: "Production package"
+
+---
+# Source: devops-web/templates/service.yaml
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: audit-web
+
+  labels:
+    app.kubernetes.io/name: devops-web
+    app.kubernetes.io/instance: audit-web
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app.kubernetes.io/name: devops-web
+    app.kubernetes.io/instance: audit-web
+
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+
+---
+# Source: devops-web/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: audit-web
+
+  labels:
+    app.kubernetes.io/name: devops-web
+    app.kubernetes.io/instance: audit-web
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: devops-web
+      app.kubernetes.io/instance: audit-web
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: devops-web
+        app.kubernetes.io/instance: audit-web
+
+      annotations:
+        lab.devops/message: "Production package"
+
+    spec:
+      containers:
+        - name: nginx
+
+          image: "nginx:stable-alpine"
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+
+          envFrom:
+            - configMapRef:
+                name: audit-web-config
+
+            - secretRef:
+                name: audit-web-secret
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 12
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+
+            limits:
+              cpu: "300m"
+              memory: "192Mi"
