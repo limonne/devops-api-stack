@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devops-api-config
+  labels:
+    app.kubernetes.io/name: devops-api-stack
+    app.kubernetes.io/part-of: devops-api-stack
+data:
+  DB_HOST: postgres
+  DB_NAME: devops_api
+  APP_VERSION: 3.0.0-rc.1
