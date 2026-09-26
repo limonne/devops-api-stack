@@ -7,3 +7,5 @@ resources:
   - configmap.yaml
   - postgres-services.yaml
   - postgres-statefulset.yaml
+  - backend-service.yaml
+  - backend-deployment.yaml

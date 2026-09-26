@@ -16,3 +16,7 @@ generatorOptions:
   labels:
     app.kubernetes.io/name: devops-api-stack
     app.kubernetes.io/part-of: devops-api-stack
+
+images:
+  - name: ghcr.io/limonne/devops-api-stack
+    newTag: feat-kubernetes-v3
