@@ -6,6 +6,7 @@ namespace: devops-api
 
 resources:
   - ../../base
+  - ingress.yaml
 
 secretGenerator:
   - name: postgres-credentials
