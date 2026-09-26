@@ -9,3 +9,6 @@ resources:
   - postgres-statefulset.yaml
   - backend-service.yaml
   - backend-deployment.yaml
+  - networkpolicy-postgres.yaml
+  - networkpolicy-backend-ingress.yaml
+  - networkpolicy-backend-egress.yaml
