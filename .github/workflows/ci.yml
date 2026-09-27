@@ -39,6 +39,38 @@ jobs:
       - name: Check python syntax
         run: python -m py_compile server.py
 
+      - name: Check Kubernetes secret hygiene
+        run: |
+          if git ls-files --error-unmatch \
+            kubernetes/devops-api-stack/overlays/lab/secrets.env \
+            >/dev/null 2>&1; then
+            echo "ERROR: secrets.env must not be tracked"
+            exit 1
+          fi
+
+      - name: Render Kubernetes manifests
+        run: |
+          secret_file=kubernetes/devops-api-stack/overlays/lab/secrets.env
+
+          cp \
+            kubernetes/devops-api-stack/overlays/lab/secrets.env.example \
+            "$secret_file"
+
+          trap 'rm -f "$secret_file"' EXIT
+
+          kubectl version --client
+
+          kubectl kustomize \
+            kubernetes/devops-api-stack/base \
+            > /tmp/devops-api-base.yaml
+
+          kubectl kustomize \
+            kubernetes/devops-api-stack/overlays/lab \
+            > /tmp/devops-api-lab.yaml
+
+          test -s /tmp/devops-api-base.yaml
+          test -s /tmp/devops-api-lab.yaml
+
       - name: System Info
         run: |
           uname -a
