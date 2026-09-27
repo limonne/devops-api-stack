@@ -11,6 +11,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  image-changes:
+    name: Detect image changes
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      publish: ${{ steps.check.outputs.publish }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check image files
+        id: check
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            publish=true
+          elif git diff --quiet "$BEFORE_SHA" "$GITHUB_SHA" -- \
+            Dockerfile \
+            .dockerignore \
+            server.py \
+            requirements.txt \
+            .github/workflows/publish-image.yml; then
+            publish=false
+          else
+            publish=true
+          fi
+
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
   call-lint:
     uses: ./.github/workflows/lint.yml
     with: 
@@ -141,11 +174,14 @@ jobs:
         if: always()
         run: docker compose down -v
 
-
   publish:
     name: Publish validated image
-    needs: healthcheck
-    if: github.event_name == 'push'
+    needs:
+      - healthcheck
+      - image-changes
+    if: |
+      github.event_name == 'push' &&
+      needs.image-changes.outputs.publish == 'true'
     permissions:
       contents: read
       packages: write
