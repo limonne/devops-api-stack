@@ -20,4 +20,4 @@ generatorOptions:
 
 images:
   - name: ghcr.io/limonne/devops-api-stack
-    newTag: feat-kubernetes-v3
+    newTag: sha-8f1edea
