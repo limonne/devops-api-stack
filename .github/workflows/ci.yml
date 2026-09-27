@@ -11,6 +11,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  image-changes:
+    name: Detect image changes
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      publish: ${{ steps.check.outputs.publish }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check image files
+        id: check
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            publish=true
+          elif git diff --quiet "$BEFORE_SHA" "$GITHUB_SHA" -- \
+            Dockerfile \
+            .dockerignore \
+            server.py \
+            requirements.txt \
+            .github/workflows/publish-image.yml; then
+            publish=false
+          else
+            publish=true
+          fi
+
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
   call-lint:
     uses: ./.github/workflows/lint.yml
     with: 
@@ -38,6 +71,38 @@ jobs:
 
       - name: Check python syntax
         run: python -m py_compile server.py
+
+      - name: Check Kubernetes secret hygiene
+        run: |
+          if git ls-files --error-unmatch \
+            kubernetes/devops-api-stack/overlays/lab/secrets.env \
+            >/dev/null 2>&1; then
+            echo "ERROR: secrets.env must not be tracked"
+            exit 1
+          fi
+
+      - name: Render Kubernetes manifests
+        run: |
+          secret_file=kubernetes/devops-api-stack/overlays/lab/secrets.env
+
+          cp \
+            kubernetes/devops-api-stack/overlays/lab/secrets.env.example \
+            "$secret_file"
+
+          trap 'rm -f "$secret_file"' EXIT
+
+          kubectl version --client
+
+          kubectl kustomize \
+            kubernetes/devops-api-stack/base \
+            > /tmp/devops-api-base.yaml
+
+          kubectl kustomize \
+            kubernetes/devops-api-stack/overlays/lab \
+            > /tmp/devops-api-lab.yaml
+
+          test -s /tmp/devops-api-base.yaml
+          test -s /tmp/devops-api-lab.yaml
 
       - name: System Info
         run: |
@@ -109,12 +174,15 @@ jobs:
         if: always()
         run: docker compose down -v
 
-        #    deploy-preview:
-        #    needs: healthcheck
-        #    runs-on: ubuntu-latest
-        #    environment:
-        #      name: DEVOPS-API-STACK
-        #    steps:
-        #      - name: Simulate deploy
-        #        run: echo "Deploy gated by environment approval"
-
+  publish:
+    name: Publish validated image
+    needs:
+      - healthcheck
+      - image-changes
+    if: |
+      github.event_name == 'push' &&
+      needs.image-changes.outputs.publish == 'true'
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/publish-image.yml

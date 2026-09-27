@@ -1,8 +1,8 @@
 # DevOps API Stack
 
-A small DevOps lab project using Docker Compose to run a multi-service application with Nginx, a Python backend API and PostgreSQL.
+A DevOps learning project that evolves a Python API and PostgreSQL stack through Docker Compose, CI/CD, Terraform and Kubernetes.
 
-## Architecture
+## Docker Compose architecture
 
 ```text
 Client
@@ -14,7 +14,7 @@ Python backend :8080
 PostgreSQL :5432
 ```
 
-## Services
+## Docker Compose services
 
 - nginx: reverse proxy exposed on host port 8080
 - backend: Python API
@@ -30,15 +30,26 @@ PostgreSQL :5432
 | `/api/version` | GET | returns backend version |
 | `/api/help` | GET | returns all the commands available |
 | `/api/metrics` | GET | returns metrics for Endpoint requests, hostname, etc |
+| `/api/live` | GET | confirms that the backend process is alive |
+| `/api/ready` | GET | confirms that the backend can reach PostgreSQL |
 | `/api/whoami` | GET | returns the hostname and IP from current backend |
 
-## How to run
+## Run with Docker Compose
 
 ```bash
 docker compose up -d --build
 ```
 
-## Test
+## Run on Kubernetes
+
+The integrated Kubernetes deployment includes a multi-architecture backend
+image, PostgreSQL persistent storage, Ingress and NetworkPolicies.
+
+See the
+[Kubernetes deployment guide](kubernetes/devops-api-stack/README.md)
+for architecture, prerequisites, deployment and validation instructions.
+
+## Test Docker Compose
 
 ```bash
 curl localhost:8080/api/health
@@ -50,7 +61,7 @@ curl localhost:8080/api/whoami
 curl localhost:8080/api/metrics
 ```
 
-## Test with jq
+## Test Docker Compose with jq
 
 ```bash
 curl -s localhost:8080/api/health | jq
@@ -66,12 +77,16 @@ curl -s localhost:8080/api/metrics | jq
 
 The GitHub Actions pipeline validates:
 
-- Python syntax with Matrix
+- Python syntax and linting
+- YAML files
 - Docker Compose configuration
 - Docker image build
-- Full stack healthcheck
-- Added Reusable Workflows
-- Added Composite Actions
+- Docker Compose stack health checks
+- Kustomize rendering for the Kubernetes base and lab overlay
+- Kubernetes secret-file hygiene
+- Multi-architecture image publication to GHCR
+
+The pipeline uses reusable workflows and composite actions.
 
 ## Troubleshooting notes
 ### Backend starts before PostgreSQL is ready
@@ -104,6 +119,10 @@ Docker Compose + API + PostgreSQL + GitHub Actions
 v2.0.0
 Terraform Infrastructure Foundation
 
+v3.0.0
+Multi-architecture container image and integrated Kubernetes deployment with
+Kustomize, persistent PostgreSQL, Ingress and NetworkPolicies.
+
 ### Check specific version
 
 ```bash
@@ -114,7 +133,7 @@ git switch --detach v2.0.0
 Back to dev environment:
 
 ```bash
-git switch main
+git switch master
 ```
 
 ## Stack

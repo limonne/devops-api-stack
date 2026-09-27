@@ -28,7 +28,9 @@ Every manifest in this repository was created as part of the Kubernetes learning
 
 The objective is not to deploy a production-ready application, but to provide small, focused examples that demonstrate one Kubernetes feature at a time.
 
-Once the Kubernetes section is complete, these concepts will be combined into the full devops-api-stack application.
+These concepts are now combined in the integrated
+[devops-api-stack deployment](devops-api-stack/README.md), which includes the
+backend API, PostgreSQL, persistent storage, Ingress and NetworkPolicies.
 
 ## How to execute
 
@@ -119,6 +121,6 @@ The project is tested on a kubeadm cluster composed of:
 
 - Ubuntu AMD64 control plane
 - Debian ARM64 worker
-- Flannel CNI
+- Replaced Flannel CNI with Calico CNI (NetworkPolicy enforcement)
 - containerd runtime
 - Kubernetes 1.35

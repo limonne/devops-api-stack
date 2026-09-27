@@ -33,4 +33,4 @@ jobs:
 
       - name: Lint yaml
         if: matrix.linter == 'yaml'
-        run: yamllint docker-compose.yml
+        run: yamllint docker-compose.yml kubernetes/devops-api-stack
