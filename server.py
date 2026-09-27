@@ -144,6 +144,10 @@ class App(BaseHTTPRequestHandler):
         global REQUEST_COUNT
 
         endpoint = self.path.split("?", 1)[0]
+
+        if endpoint.startswith("/api/"):
+            endpoint = endpoint[4:]
+
         REQUEST_COUNT += 1
         REQUESTS_BY_ENDPOINT[endpoint] = (
             REQUESTS_BY_ENDPOINT.get(endpoint, 0) + 1
