@@ -8,16 +8,10 @@ resources:
   - ../../base
   - ingress.yaml
 
-secretGenerator:
-  - name: postgres-credentials
-    envs:
-      - secrets.env
-
-generatorOptions:
-  labels:
-    app.kubernetes.io/name: devops-api-stack
-    app.kubernetes.io/part-of: devops-api-stack
-
 images:
   - name: ghcr.io/limonne/devops-api-stack
     newTag: sha-d87fa49
+
+replicas:
+  - name: backend
+    count: 3

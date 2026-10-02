@@ -83,14 +83,6 @@ jobs:
 
       - name: Render Kubernetes manifests
         run: |
-          secret_file=kubernetes/devops-api-stack/overlays/lab/secrets.env
-
-          cp \
-            kubernetes/devops-api-stack/overlays/lab/secrets.env.example \
-            "$secret_file"
-
-          trap 'rm -f "$secret_file"' EXIT
-
           kubectl version --client
 
           kubectl kustomize \
