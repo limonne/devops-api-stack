@@ -15,7 +15,7 @@ flowchart TD
     NodePort --> Controller["ingress-nginx"]
     Controller --> Ingress["Ingress<br/>devops-api.lab/api"]
     Ingress --> BackendService["Backend Service<br/>TCP 8080"]
-    BackendService --> BackendPods["2 backend Pods<br/>multi-architecture image"]
+    BackendService --> BackendPods["3 backend Pods<br/>multi-architecture image"]
     BackendPods --> PostgresService["PostgreSQL Service<br/>TCP 5432"]
     PostgresService --> Postgres["PostgreSQL StatefulSet"]
     Postgres --> Storage["PVC<br/>local-path StorageClass"]
@@ -27,8 +27,8 @@ flowchart TD
 |---|---|---|
 | Application namespace | Namespace | Isolates the application resources |
 | Application configuration | ConfigMap | Stores non-sensitive application settings |
-| Database credentials | Generated Secret | Stores the PostgreSQL username and password |
-| Backend | Deployment | Runs two replicas of the Python API |
+| Database credentials | Secret | Stores the PostgreSQL username and password outside Git |
+| Backend | Deployment | Runs three replicas of the Python API in the lab overlay |
 | Backend networking | ClusterIP Service | Provides a stable endpoint for the backend Pods |
 | Database | StatefulSet | Runs PostgreSQL with persistent storage |
 | Database networking | ClusterIP and headless Services | Provides application access and stable StatefulSet identity |
@@ -36,6 +36,7 @@ flowchart TD
 | External routing | Ingress | Routes `/api` requests for `devops-api.lab` |
 | Cluster entry point | ingress-nginx NodePort | Exposes HTTP on port `30080` |
 | Network security | NetworkPolicy | Restricts communication between components |
+| GitOps deployment | Argo CD Application | Keeps the cluster aligned with the `master` branch |
 
 ## Tested environment
 
@@ -46,8 +47,7 @@ The deployment is tested on a mixed-architecture kubeadm cluster:
 | Ubuntu control plane | AMD64 | Kubernetes control plane |
 | Raspberry Pi worker | ARM64 | Application workloads |
 
-The backend image is published to GitHub Container Registry as a
-multi-architecture OCI image supporting:
+The backend image is published to GitHub Container Registry with support for:
 
 - `linux/amd64`
 - `linux/arm64`
@@ -61,7 +61,8 @@ The following components must be available before deploying the application:
 - Helm;
 - a CNI that enforces Kubernetes NetworkPolicy, in this case Calico;
 - Rancher Local Path Provisioner;
-- ingress-nginx.
+- ingress-nginx;
+- Argo CD.
 
 Verify the cluster components:
 
@@ -121,7 +122,7 @@ The controller is exposed using:
 The application currently uses HTTP only. Port `30443` is reserved for a
 future TLS configuration.
 
-## Configure local credentials
+## Configure the PostgreSQL credentials
 
 Create the local secret source from the provided example:
 
@@ -140,10 +141,24 @@ DB_USER=devops_api
 DB_PASS=replace-with-a-strong-password
 ```
 
-Kustomize generates a Secret with a content hash in its name and updates all
-references to the generated name automatically.
+The file is ignored by Git and must never be committed. Create the namespace
+and the Secret directly in the cluster:
 
-## Deploy the application
+```bash
+kubectl create namespace devops-api \
+  --dry-run=client \
+  -o yaml | kubectl apply -f -
+
+kubectl -n devops-api create secret generic postgres-credentials \
+  --from-env-file=overlays/lab/secrets.env \
+  --dry-run=client \
+  -o yaml | kubectl apply -f -
+```
+
+The Secret keeps the stable name `postgres-credentials`. It is required by the
+backend and PostgreSQL, but it is not managed by Git or Argo CD.
+
+## Validate the manifests
 
 Render the manifests before applying them:
 
@@ -157,18 +172,47 @@ Perform server-side validation:
 kubectl apply -k overlays/lab --dry-run=server
 ```
 
-Deploy:
+## Deploy with Argo CD
+
+GitHub Actions and Argo CD have different responsibilities:
+
+- GitHub Actions validates the project and publishes container images;
+- Argo CD deploys the manifests and reconciles the cluster state.
+
+The Argo CD Application follows:
+
+- branch: `master`;
+- path: `kubernetes/devops-api-stack/overlays/lab`.
+
+Automatic sync, pruning and self-healing are enabled. After a change is merged
+into `master`, Argo CD detects it and applies the new desired state.
+
+Bootstrap the AppProject and Application once:
 
 ```bash
-kubectl apply -k overlays/lab
+kubectl apply -k argocd
+
+kubectl -n argocd get \
+  appproject/devops-api-stack \
+  application/devops-api-stack
 ```
 
-Wait for PostgreSQL and the backend:
+Follow the first reconciliation:
 
 ```bash
-kubectl -n devops-api rollout status statefulset/postgres
+kubectl -n argocd get \
+  application/devops-api-stack \
+  -w
+```
 
-kubectl -n devops-api rollout status deployment/backend
+When the Application reports `Synced` and `Healthy`, confirm the workloads:
+
+```bash
+kubectl -n devops-api rollout status \
+  statefulset/postgres
+
+kubectl -n devops-api rollout status \
+  deployment/backend
 ```
 
 ## Verify the deployment
@@ -182,7 +226,7 @@ kubectl -n devops-api get \
 Expected state:
 
 - PostgreSQL StatefulSet: `1/1`;
-- backend Deployment: `2/2`;
+- backend Deployment: `3/3`;
 - PostgreSQL PVC: `Bound`;
 - Ingress host: `devops-api.lab`;
 - backend and PostgreSQL Pods: no unexpected restarts.
@@ -294,7 +338,7 @@ The backend container:
 - runs as a non-root user;
 - uses a read-only root filesystem;
 - disables privilege escalation;
-- does not mount a Kubernetes ServiceAccount token.
+- does not mount a Kubernetes ServiceAccount token;
 - drops all Linux capabilities;
 - uses the runtime-default seccomp profile.
 
@@ -319,15 +363,12 @@ To deploy another validated build:
      ghcr.io/limonne/devops-api-stack:sha-COMMIT
    ```
 
-2. Update `newTag` in `overlays/lab/kustomization.yaml`.
+2. Update `newTag` in `overlays/lab/kustomization.yaml` on a feature branch.
 
-3. Reapply the overlay:
+3. Commit the change, push the branch and merge the pull request after CI
+   succeeds.
 
-   ```bash
-   kubectl apply -k overlays/lab
-
-   kubectl -n devops-api rollout status deployment/backend
-   ```
+4. Argo CD detects the change in `master` and performs the rollout.
 
 ## Continuous integration
 
@@ -340,10 +381,14 @@ GitHub Actions validates:
 - YAML files in this package;
 - Kustomize rendering for the base and lab overlay;
 - secret-file hygiene;
-- multi-architecture image publication to GHCR.
+- multi-architecture image publication to GHCR when image-related files
+  change.
 
-The CI workflow uses `secrets.env.example` only for rendering. Real local
-credentials are never uploaded.
+The workflow also confirms that `secrets.env` is not tracked. Real credentials
+are never uploaded to GitHub.
+
+GitHub Actions does not deploy the application. Deployment is handled by Argo
+CD after the validated change reaches `master`.
 
 ## Troubleshooting
 
@@ -394,16 +439,43 @@ kubectl -n kube-system get pods -l k8s-app=kube-dns
 kubectl -n devops-api get networkpolicy/allow-backend-egress
 ```
 
-## Removal
+### Argo CD does not report Synced
 
-Deleting the overlay also deletes the `devops-api` Namespace and its
-namespaced resources:
+Inspect the Application conditions and the repo-server logs:
 
 ```bash
-kubectl delete -k overlays/lab
+kubectl -n argocd get \
+  application/devops-api-stack \
+  -o yaml
 
+kubectl -n argocd logs \
+  deployment/argocd-repo-server \
+  --tail=50
 ```
-> **Warning:** deleting the overlay also deletes the Namespace, PVC and
+
+Also confirm that `postgres-credentials` exists before expecting the workloads
+to become Ready:
+
+```bash
+kubectl -n devops-api get secret/postgres-credentials
+```
+
+## Removal
+
+Delete the Argo CD Application first so it does not recreate resources while
+they are being removed:
+
+```bash
+kubectl -n argocd delete \
+  application/devops-api-stack
+
+kubectl -n argocd delete \
+  appproject/devops-api-stack
+
+kubectl delete namespace devops-api
+```
+
+> **Warning:** deleting the Namespace also deletes the PVC and
 > dynamically provisioned PostgreSQL volume. The stored database data may be
 > permanently lost.
 
@@ -425,8 +497,8 @@ Current limitations are deliberate:
 - node-local persistent storage;
 - HTTP without TLS;
 - NodePort instead of a cloud load balancer;
-- locally generated Kubernetes Secret;
+- PostgreSQL credentials created manually in the cluster;
 - no automated database backup;
-- no GitOps.
+- no external Secret management.
 
-These areas will evolve during the GitOps, observability and AWS phases.
+These areas will evolve during the observability and AWS phases.
