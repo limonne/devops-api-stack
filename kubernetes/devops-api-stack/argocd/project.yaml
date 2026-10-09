@@ -31,3 +31,5 @@ spec:
       kind: Ingress
     - group: networking.k8s.io
       kind: NetworkPolicy
+    - group: Batch
+      kind: Jobs

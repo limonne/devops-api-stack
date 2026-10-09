@@ -7,6 +7,7 @@ namespace: devops-api
 resources:
   - ../../base
   - ingress.yaml
+  - release-check-config.yaml
 
 images:
   - name: ghcr.io/limonne/devops-api-stack
@@ -15,3 +16,6 @@ images:
 replicas:
   - name: backend
     count: 3
+
+annotations:
+  argocd.argoproj.io/sync-wave: "-2"
