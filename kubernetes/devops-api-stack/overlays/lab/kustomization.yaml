@@ -16,6 +16,3 @@ images:
 replicas:
   - name: backend
     count: 3
-
-annotations:
-  argocd.argoproj.io/sync-wave: "-2"

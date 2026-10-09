@@ -13,6 +13,10 @@ spec:
   destinations:
     - namespace: devops-api
       server: https://kubernetes.default.svc
+    - namespace: devops-api-staging
+      server: https://kubernetes.default.svc
+    - namespace: devops-api-production
+      server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
     - group: ""

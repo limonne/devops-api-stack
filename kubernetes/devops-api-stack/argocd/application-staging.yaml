@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: devops-api-stack-staging
+  namespace: argocd
+spec:
+  project: devops-api-stack
+
+  source:
+    repoURL: https://github.com/limonne/devops-api-stack.git
+    targetRevision: master
+    path: kubernetes/devops-api-stack/overlays/staging
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops-api-staging
+
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

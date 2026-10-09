@@ -5,3 +5,5 @@ kind: Kustomization
 resources:
   - project.yaml
   - application.yaml
+  - application-staging.yaml
+  - application-production.yaml
