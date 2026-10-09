@@ -36,4 +36,4 @@ spec:
     - group: networking.k8s.io
       kind: NetworkPolicy
     - group: Batch
-      kind: Jobs
+      kind: Job
