@@ -15,4 +15,4 @@ replicas:
 
 images:
   - name: ghcr.io/limonne/devops-api-stack
-    newTag: sha-d87fa49
+    digest: sha256:d544b0999aee
