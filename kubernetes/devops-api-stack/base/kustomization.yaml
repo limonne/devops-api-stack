@@ -12,3 +12,4 @@ resources:
   - networkpolicy-postgres.yaml
   - networkpolicy-backend-ingress.yaml
   - networkpolicy-backend-egress.yaml
+  - backend-post-sync-job.yaml

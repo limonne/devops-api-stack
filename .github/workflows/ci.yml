@@ -102,6 +102,22 @@ jobs:
           df -h
           free -h
           nproc
+      - name: Validate environment overlays
+        run: |
+          for environment in lab staging production; do
+            rendered="/tmp/devops-api-$environment.yaml"
+
+            kubectl kustomize \
+              "kubernetes/devops-api-stack/overlays/$environment" \
+              > "$rendered"
+
+            test -s "$rendered"
+
+            if rg -q '^kind: Secret$' "$rendered"; then
+              echo "ERROR: $environment renders a Secret"
+              exit 1
+            fi
+          done
 
   build:
     needs: validate

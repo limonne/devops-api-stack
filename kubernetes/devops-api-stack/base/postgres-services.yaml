@@ -8,6 +8,8 @@ metadata:
     app.kubernetes.io/instance: devops-api
     app.kubernetes.io/component: database
     app.kubernetes.io/part-of: devops-api-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   type: ClusterIP
   selector:
@@ -28,6 +30,8 @@ metadata:
     app.kubernetes.io/instance: devops-api
     app.kubernetes.io/component: database
     app.kubernetes.io/part-of: devops-api-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   clusterIP: None
   publishNotReadyAddresses: true
