@@ -486,6 +486,161 @@ when it is no longer used by other applications:
 helm uninstall ingress-nginx -n ingress-nginx
 ```
 
+## GitOps environments and release checks
+
+The application has three environments in the same lab cluster.
+Each environment has its own Argo CD Application, namespace, PostgreSQL
+workload and Ingress hostname.
+
+| Environment | Overlay | Namespace | Argo CD Application |
+| --- | --- | --- | --- |
+| Lab | `overlays/lab` | `devops-api` | `devops-api-stack` |
+| Staging | `overlays/staging` | `devops-api-staging` | `devops-api-stack-staging` |
+| Production lab | `overlays/production` | `devops-api-production` | `devops-api-stack-production` |
+
+All Applications follow `master` in this repository.
+The paths above are relative to `kubernetes/devops-api-stack/`.
+
+GitHub Actions validates the code and manifests, and publishes images when
+image-related files change or a release tag is pushed. Argo CD monitor the
+configured Git paths and deploys the desired state.
+
+### Secrets
+
+The `postgres-credentials` Secret is created directly in each environment
+namespace before the first deployment. The workloads reference this Secret
+by name.
+
+The overlays do not generate it. The local `secrets.env` file stays outside
+Git, and the credentials are not included in the rendered manifests.
+Argo CD cannot recreate this Secret from the application manifests if it
+is missing.
+
+### Deployment order
+
+Sync waves organise the resources within the Sync phase.
+Lower wave numbers are applied first.
+
+| Wave | Resources |
+| --- | --- |
+| `-2` | Application ConfigMap and both PostgreSQL Services |
+| `-1` | PostgreSQL StatefulSet |
+| `0` | Backend Deployment, backend Service and NetworkPolicies |
+| `1` | Ingress |
+
+The PostSync check runs after the Sync phase and waits for the application
+resources to become Healthy. Its phase determines when it runs, even if
+the hook has the default wave.
+
+The AppProject must allow the hook's resource type:
+
+```yaml
+namespaceResourceWhitelist:
+  - group: batch
+    kind: Job
+```
+
+This entry belongs under `spec` in the AppProject and is added alongside
+the resource types already permitted.
+
+### PostSync API check
+
+The `backend-release-check` Job calls the API through the Ingress
+Controller, using the hostname configured for that environment.
+
+| Endpoint | Expected response |
+| --- | --- |
+| `/api/live` | `status` is `alive` |
+| `/api/ready` | `database` is `OK` |
+| `/api/version` | `version` matches `EXPECTED_VERSION` |
+
+Each overlay defines `INGRESS_URL`, `API_HOST` and `EXPECTED_VERSION` in
+`release-check-config.yaml`.
+
+The Job uses the same application image as the backend. Its
+`BeforeHookCreation` policy removes the previous hook before creating a
+new one. Logs remain available until that replacement.
+
+A failed PostSync check marks the sync operation as failed. The application
+resources can still be Synced and Healthy because these states describe
+different checks. A PostSync failure does not automatically roll back the
+workloads.
+
+### Promote the same image
+
+Promote a release by updating the image digest in each overlay, starting
+with lab, then staging, then the production lab.
+
+Use the complete digest from the beginning of this command's output:
+
+```bash
+docker buildx imagetools inspect \
+  ghcr.io/limonne/devops-api-stack:sha-12e1686
+```
+
+For each promotion:
+
+1. Update the target overlay with the approved digest.
+2. Render the overlay and check the diff.
+3. Commit, push and merge the pull request into `master`.
+4. Wait for the corresponding Argo CD Application and PostSync check.
+5. Confirm success before promoting to the next environment.
+
+Reuse the approved image without rebuilding it for each environment.
+Publishing an image alone does not update a pinned digest in Git.
+
+The Applications sync independently. This promotion order is followed
+through separate pull requests; a staging failure does not automatically
+block another Application from syncing.
+
+### Validate a release
+
+Run these commands from the repository root:
+
+```bash
+for application in \
+  devops-api-stack \
+  devops-api-stack-staging \
+  devops-api-stack-production; do
+
+  printf '\n--- %s ---\n' "$application"
+
+  kubectl -n argocd get application "$application" -o json |
+    jq '{
+      revision: .status.sync.revision,
+      sync: .status.sync.status,
+      health: .status.health.status,
+      operationRevision: .status.operationState.syncResult.revision,
+      operation: .status.operationState.phase
+    }'
+done
+```
+
+Confirm `Synced`, `Healthy` and `Succeeded`. Also check that `revision`
+and `operationRevision` match the merged commit being validated.
+
+Read the hook logs for each environment:
+
+```bash
+for namespace in \
+  devops-api \
+  devops-api-staging \
+  devops-api-production; do
+
+  printf '\n--- %s ---\n' "$namespace"
+  kubectl -n "$namespace" logs job/backend-release-check
+done
+```
+
+The expected final message is `PostSync API check OK`.
+
+### References
+
+- [Argo CD sync phases and waves](https://argo-cd.readthedocs.io/en/stable/user-guide/sync-waves/)
+- [Argo CD automated sync](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/)
+- [Docker image digests](https://docs.docker.com/dhi/explore/security-concepts/digests/)
+
+
 ## Current limitations
 
 This project aims to be a realistic laboratory deployment, not a production
