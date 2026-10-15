@@ -11,7 +11,8 @@ resources:
 
 images:
   - name: ghcr.io/limonne/devops-api-stack
-    newTag: sha256:d544b0999aee
+    digest: >-
+      sha256:7ac304d42224f569a3e01d4e663416e9e45c4f21a2bfd1e5e1a87a23c3dc10b8
 
 replicas:
   - name: backend
