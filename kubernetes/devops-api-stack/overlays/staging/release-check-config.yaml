@@ -6,4 +6,4 @@ metadata:
 data:
   INGRESS_URL: http://ingress-nginx-controller.ingress-nginx
   API_HOST: devops-api.staging.lab
-  EXPECTED_VERSION: "99.0.0"
+  EXPECTED_VERSION: "3.0.0"
