@@ -58,6 +58,7 @@ METRIC_ENDPOINTS = {
     "/version", "/help", "/whoami", "/metrics",
 }
 
+
 @contextmanager
 def database_connection():
     connection = psycopg2.connect(
