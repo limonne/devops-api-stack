@@ -20,6 +20,6 @@ COPY --chown=10001:10001 server.py .
 
 USER 10001:10001
 
-EXPOSE 8080
+EXPOSE 8080 9091
 
 CMD ["python", "server.py"]
