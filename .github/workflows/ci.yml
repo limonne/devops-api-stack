@@ -93,6 +93,11 @@ jobs:
             kubernetes/devops-api-stack/overlays/lab \
             > /tmp/devops-api-lab.yaml
 
+          kubectl kustomize \
+            kubernetes/devops-api-stack/monitoring \
+            > /tmp/devops-api-monitoring.yaml
+
+          test -s /tmp/devops-api-monitoring.yaml
           test -s /tmp/devops-api-base.yaml
           test -s /tmp/devops-api-lab.yaml
 
