@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import datetime
+from prometheus_client import Counter, Histogram, start_http_server
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import os
@@ -35,6 +36,27 @@ if missing:
     raise RuntimeError(
         f"Missing required environment variables: {missing_names}"
     )
+
+
+REQUEST_COUNT = 0
+REQUESTS_BY_ENDPOINT = {}
+
+HTTP_REQUESTS = Counter(
+    "devops_api_http_requests_total",
+    "Completed API GET requests",
+    ["endpoint", "status"],
+)
+
+HTTP_DURATION = Histogram(
+    "devops_api_http_request_duration_seconds",
+    "API GET request duration in seconds",
+    ["endpoint"],
+)
+
+METRIC_ENDPOINTS = {
+    "/visits", "/reset", "/health", "/ready", "/live",
+    "/version", "/help", "/whoami", "/metrics",
+}
 
 
 @contextmanager
@@ -139,14 +161,28 @@ class App(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(payload)))
         self.end_headers()
         self.wfile.write(payload)
+        HTTP_REQUESTS.labels(
+            endpoint=self.metric_endpoint,
+            status=str(status_code),
+        ).inc()
+
+        HTTP_DURATION.labels(endpoint=self.metric_endpoint).observe(
+            time.perf_counter() - self.request_started
+        )
 
     def do_GET(self):
         global REQUEST_COUNT
+
+        self.request_started = time.perf_counter()
 
         endpoint = self.path.split("?", 1)[0]
 
         if endpoint.startswith("/api/"):
             endpoint = endpoint[4:]
+
+        self.metric_endpoint = (
+            endpoint if endpoint in METRIC_ENDPOINTS else "unknown"
+        )
 
         REQUEST_COUNT += 1
         REQUESTS_BY_ENDPOINT[endpoint] = (
@@ -258,6 +294,7 @@ class App(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     initialize_database()
+    start_http_server(9091)
 
     server = HTTPServer(("0.0.0.0", 8080), App)
     print(

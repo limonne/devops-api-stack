@@ -48,6 +48,9 @@ spec:
             - name: http
               containerPort: 8080
 
+            - name: metrics
+              containerPort: 9091
+
           envFrom:
             - configMapRef:
                 name: devops-api-config

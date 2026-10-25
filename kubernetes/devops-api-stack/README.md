@@ -634,6 +634,55 @@ done
 
 The expected final message is `PostSync API check OK`.
 
+## Application monitoring
+
+The backend exposes Prometheus metrics on port 9091 at `/metrics`.
+
+The existing `/api/metrics` endpoint continues to return application
+information in JSON.
+
+The application metrics include:
+
+- `devops_api_http_requests_total`: completed API GET requests,
+  grouped by endpoint and HTTP status;
+- `devops_api_http_request_duration_seconds`: measure of requests duration.
+
+Prometheus discovers and scrapes each backend Pod in the lab namespace.
+RBAC permits Pod discovery, and a NetworkPolicy permits access from
+Prometheus to the metrics port.
+
+The monitoring manifests include Prometheus, Node Exporter and
+kube-state-metrics. Prometheus uses persistent storage.
+
+Apply the monitoring configuration from the repository root:
+
+```bash
+kubectl apply -k kubernetes/devops-api-stack/monitoring
+```
+
+The application is deployed by Argo CD. The monitoring configuration
+is applied separately with Kustomize.
+
+Example PromQL queries:
+
+```promql
+up{job="devops-api"}
+```
+
+```promql
+sum(
+  rate(
+    devops_api_http_requests_total{
+      job="devops-api",
+      endpoint="/visits"
+    }[5m]
+  )
+)
+```
+
+The request metrics also include Kubernetes liveness and readiness
+probes.
+
 ### References
 
 - [Argo CD sync phases and waves](https://argo-cd.readthedocs.io/en/stable/user-guide/sync-waves/)
