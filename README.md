@@ -145,5 +145,5 @@ git switch master
 [![Terraform](https://img.shields.io/badge/Terraform-844FBA?logo=terraform&logoColor=fff)](https://github.com/limonne/devops-api-stack/tree/master/terraform)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=fff)](https://github.com/limonne/devops-api-stack/tree/master/kubernetes)
 [![ArgoCD Status](artifacts/argocd-status.svg)](https://github.com/limonne/devops-api-stack/tree/master/kubernetes/devops-api-stack/argocd)
-[![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=white)](ttps://github.com/limonne/devops-api-stack/tree/master/kubernetes/devops-api-stack/monitoring)
-[![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white)](ttps://github.com/limonne/devops-api-stack/tree/master/kubernetes/devops-api-stack/monitoring)
+[![Grafana](https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=white)](https://github.com/limonne/devops-api-stack/tree/master/kubernetes/devops-api-stack/monitoring)
+[![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=white)](https://github.com/limonne/devops-api-stack/tree/master/kubernetes/devops-api-stack/monitoring)
