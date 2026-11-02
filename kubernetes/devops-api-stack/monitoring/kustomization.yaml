@@ -13,3 +13,19 @@ resources:
   - 70-kube-state-metrics-rbac.yaml
   - 80-kube-state-metrics.yaml
   - 90-backend-rbac.yaml
+  - 100-grafana-pvc.yaml
+  - 110-grafana-deployment.yaml
+  - 120-grafana-service.yaml
+  - 130-grafana-provisioning.yaml
+  - 140-alert-webhook.yaml
+  - 150-alertmanager-config.yaml
+  - 160-alertmanager.yaml
+
+configMapGenerator:
+  - name: grafana-dashboards
+    namespace: monitoring-lab
+    files:
+      - dashboards/node-overview.json
+      - dashboards/workloads-overview.json
+      - dashboards/devops-api-overview.json
+      - dashboards/devops-api-slo.json

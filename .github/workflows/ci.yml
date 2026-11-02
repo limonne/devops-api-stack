@@ -123,6 +123,13 @@ jobs:
               exit 1
             fi
           done
+      - name: Validate Grafana dashboards
+        run: |
+          for dashboard in \
+            kubernetes/devops-api-stack/monitoring/dashboards/*.json; do
+
+            python -m json.tool "$dashboard" >/dev/null
+          done
 
   build:
     needs: validate

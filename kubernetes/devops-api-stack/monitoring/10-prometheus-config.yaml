@@ -13,6 +13,14 @@ data:
 
     rule_files:
       - /etc/prometheus/node-rules.yml
+      - /etc/prometheus/lab-alerts.yml
+      - /etc/prometheus/sre-rules.yml
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+                - alertmanager.monitoring-lab.svc.cluster.local:9093
 
     scrape_configs:
       - job_name: devops-api
@@ -91,3 +99,74 @@ data:
                 /
                 node_memory_MemTotal_bytes{job="node-exporter"}
               ))*100
+  lab-alerts.yml: |
+    groups:
+      - name: monitoring-lab-alerts
+        interval: 15s
+        rules:
+          - alert: KubeStateMetricsDown
+            expr: up{job="kube-state-metrics"} == 0
+            for: 1m
+            labels:
+              severity: warning
+              team: platform
+            annotations:
+              summary: "Kube-state-metrics indisponivel"
+              description: >-
+                Prometheus can't retrieve metrics to
+                {{ $labels.instance }} for about 1 minute.
+  sre-rules.yml: |
+    groups:
+      - name: api-sre-lab
+        interval: 15s
+        rules:
+          - record: api:visits_success:ratio30m
+            expr: |
+              sum(increase(
+                devops_api_http_requests_total{
+                  job="devops-api", namespace="devops-api",
+                  endpoint="/visits", status=~"2.."
+                }[30m]
+              ))
+              /
+              sum(increase(
+                devops_api_http_requests_total{
+                  job="devops-api", namespace="devops-api",
+                  endpoint="/visits"
+                }[30m]
+              ))
+
+          - record: api:visits_errors:ratio5m
+            expr: |
+              clamp_min(
+                1 -
+                sum(rate(
+                  devops_api_http_requests_total{
+                    job="devops-api", namespace="devops-api",
+                    endpoint="/visits", status=~"2.."
+                  }[5m]
+                ))
+                /
+                sum(rate(
+                  devops_api_http_requests_total{
+                    job="devops-api", namespace="devops-api",
+                    endpoint="/visits"
+                  }[5m]
+                )),
+                0
+              )
+
+          - record: api:visits_burn_rate:ratio5m
+            expr: api:visits_errors:ratio5m / 0.01
+
+          - alert: ApiVisitsHighBurn
+            expr: api:visits_burn_rate:ratio5m > 5
+            for: 1m
+            labels:
+              severity: critical
+              job: devops-api
+              environment: lab
+            annotations:
+              summary: "Consumo elevado do error budget de /visits"
+              description: >-
+                Burn rate de {{ $value }}x na janela de 5 minutos.
