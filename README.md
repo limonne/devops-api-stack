@@ -88,6 +88,69 @@ The GitHub Actions pipeline validates:
 
 The pipeline uses reusable workflows and composite actions.
 
+## API checks
+
+The Python checker verifies the API's liveness, database readiness, and version. Each endpoint must return HTTP `200` and the expected JSON value.
+
+| Endpoint | Required response value |
+| --- | --- |
+| `/api/live` | `status` is `alive` |
+| `/api/ready` | `database` is `OK` |
+| `/api/version` | `version` matches `expected_version` for the selected environment |
+
+### Setup
+
+From the repository root, create a virtual environment and install the development dependencies:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+```
+
+### Run the checks
+
+With the local Docker Compose stack running:
+
+```bash
+python scripts/check_api.py --environment compose
+```
+
+To check the Kubernetes lab environment:
+
+```bash
+python scripts/check_api.py \
+  --environment lab \
+  --output /tmp/api-check-lab.json
+
+python -m json.tool /tmp/api-check-lab.json
+```
+
+The available environments are `compose`, `lab`, `staging`, and `production`. For Kubernetes checks, run the script from a machine that can reach the configured worker address. The `Host` header selects the Ingress rule for the environment.
+
+| Option | Default |
+| --- | --- |
+| `--environment` | `lab` |
+| `--config` | `config/api-checks.json` |
+| `--output` | `/tmp/devops-api-check.json` |
+| `--timeout` | `3.0` seconds |
+
+Update `expected_version` in `config/api-checks.json` when the intended version for an environment changes.
+
+### Results and exit codes
+
+The JSON report records the HTTP status, expected value, received value, and error details for each check. It is saved even when an API check fails.
+
+| Exit code | Meaning |
+| --- | --- |
+| `0` | All checks passed |
+| `1` | One or more API checks failed |
+| `2` | Invalid arguments, a configuration error, or a report write failure |
+
+### Continuous integration
+
+The GitHub Actions `healthcheck` job runs the checker in `compose` mode after the stack is ready. A nonzero exit code fails the step, and `artifacts/api-check.json` is included in the uploaded CI diagnostics.
+
 ## Troubleshooting notes
 ### Backend starts before PostgreSQL is ready
 
