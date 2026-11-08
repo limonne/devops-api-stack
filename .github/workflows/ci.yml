@@ -70,7 +70,8 @@ jobs:
         run: docker compose config
 
       - name: Check python syntax
-        run: python -m py_compile \
+        run: |
+          python -m py_compile \
           server.py \
           scripts/check_api.py
 
