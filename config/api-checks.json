@@ -1,0 +1,22 @@
+{
+  "compose": {
+    "base_url": "http://127.0.0.1:8080",
+    "host": "localhost",
+    "expected_version": "3.0.0"
+  },
+  "lab": {
+    "base_url": "http://k8s-worker-01:30080",
+    "host": "devops-api.lab",
+    "expected_version": "3.0.0"
+  },
+  "staging": {
+    "base_url": "http://k8s-worker-01:30080",
+    "host": "devops-api.staging.lab",
+    "expected_version": "3.0.0"
+  },
+  "production": {
+    "base_url": "http://k8s-worker-01:30080",
+    "host": "devops-api.production.lab",
+    "expected_version": "3.0.0"
+  }
+}

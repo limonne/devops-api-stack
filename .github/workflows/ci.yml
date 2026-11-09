@@ -70,7 +70,13 @@ jobs:
         run: docker compose config
 
       - name: Check python syntax
-        run: python -m py_compile server.py
+        run: |
+          python -m py_compile \
+          server.py \
+          scripts/check_api.py
+
+      - name: Validate API check configuration
+        run: python -m json.tool config/api-checks.json > /dev/null
 
       - name: Check Kubernetes secret hygiene
         run: |
@@ -162,6 +168,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Setup Python dependencies
+        uses: ./.github/actions/setup-python
+
       - name: Check Docker build
         run: docker build -t devops-api-backend .
 
@@ -182,6 +196,14 @@ jobs:
 
       - name: Health Checks
         uses: ./.github/actions/healthchecks
+
+      - name: Check API with Python
+        run: |
+          mkdir -p artifacts
+
+          python scripts/check_api.py \
+            --environment compose \
+            --output artifacts/api-check.json
 
       - name: Upload artifacts
         if: always()

@@ -16,3 +16,5 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 kubernetes/devops-api-stack/overlays/*/secrets.env
+.venv/
+artifacts/api-check*.json
