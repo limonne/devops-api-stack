@@ -174,6 +174,12 @@ Added actions/cache to cache pip packages.
 # Performance notes
 Although there’s no significant optimization in seconds for this project, it’s a foundation for the future.
 
+## AWS governance
+
+The planned AWS phase starts with a multi-account governance baseline covering account separation, regional guardrails, audit logging, configuration tracking, tagging and cost monitoring.
+
+See the [AWS governance baseline](aws/README.md) for the target architecture and deployment sequence.
+
 ## Releases
 
 v1.0.0
