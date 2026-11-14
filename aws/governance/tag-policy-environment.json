@@ -1,0 +1,38 @@
+{
+  "tags": {
+    "environment": {
+      "tag_key": {
+        "@@assign": "Environment"
+      },
+      "tag_value": {
+        "@@assign": [
+          "Lab",
+          "Staging",
+          "Production"
+        ]
+      }
+    },
+    "project": {
+      "tag_key": {
+        "@@assign": "Project"
+      }
+    },
+    "owner": {
+      "tag_key": {
+        "@@assign": "Owner"
+      }
+    },
+    "managedby": {
+      "tag_key": {
+        "@@assign": "ManagedBy"
+      },
+      "tag_value": {
+        "@@assign": [
+          "Terraform",
+          "CloudFormation",
+          "Manual"
+        ]
+      }
+    }
+  }
+}

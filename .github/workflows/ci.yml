@@ -205,6 +205,12 @@ jobs:
             --environment compose \
             --output artifacts/api-check.json
 
+      - name: Validate AWS governance policies
+        run: |
+          for policy_file in aws/governance/*.json; do
+            python -m json.tool "$policy_file" >/dev/null
+          done
+
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
